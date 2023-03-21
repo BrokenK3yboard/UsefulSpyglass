@@ -19,8 +19,6 @@ import java.util.List;
 public class InfoOverlay {
 
     private static final ItemStack TOOLTIP_STACK = ItemStack.EMPTY;
-    private static int healthStat;
-    private static int armorStat;
 
     private static int rectangleWidth;
     private static int rectangleHeight;
@@ -34,26 +32,7 @@ public class InfoOverlay {
         Player player = Minecraft.getInstance().player;
 
         if(player != null && clientTooltipList != null && clientTooltipList.size() > 0) {
-            GuiUtil.drawGUI(poseStack, clientTooltipList, rectangleX, rectangleY, rectangleWidth, rectangleHeight);
-        }
-    });
-
-    public static final IIngameOverlay statDisplay = OverlayRegistry.registerOverlayAbove(ForgeIngameGui.HUD_TEXT_ELEMENT, "hud_stats", (gui, poseStack, partialTick, width, height) -> {
-        gui.setupOverlayRenderState(true, false);
-        Player player = Minecraft.getInstance().player;
-
-        if(player != null && clientTooltipList != null && clientTooltipList.size() > 0) {
-            int heightOffset = clientTooltipList.get(0).getHeight();
-            int yOffset = 1;
-
-            if(healthStat > 0) {
-                GuiUtil.renderIcon(rectangleX, rectangleY + heightOffset + heightOffset * yOffset, 52, 0, 8, 8, 9, 9);
-            }
-            if(armorStat > 0) {
-                yOffset++;
-                GuiUtil.renderIcon(rectangleX, rectangleY + heightOffset + heightOffset * yOffset, 43, 9, 8, 8, 9, 9);
-            }
-            //GuiUtil.renderIcon(rectangleX, rectangleY + clientTooltipList.get(0).getHeight() * yOffset + 2, 18, 95, 9, 9, 18, 18);
+            DrawOverlay.drawGUI(poseStack, clientTooltipList, rectangleX, rectangleY, rectangleWidth, rectangleHeight);
         }
     });
 
@@ -61,13 +40,11 @@ public class InfoOverlay {
         List<Component> tooltipList = new ArrayList<>();
 
         if(name != null) {
-            healthStat = (int) health;
-            armorStat = armor;
 
             tooltipList.add(name);
             tooltipList.add(relation);
-            if (health > 0)
-                tooltipList.add(new TextComponent("x " + (int)health));
+            tooltipList.add(new TextComponent("x " + (int)health));
+
             if (armor > 0)
                 tooltipList.add(new TextComponent("x " + armor));
         }
@@ -77,7 +54,7 @@ public class InfoOverlay {
                 Minecraft.getInstance().font, Minecraft.getInstance().font);
 
         // 75/427 hud/screen windowed, 85/480 fullscreen, or (int) (Minecraft.getInstance().getWindow().getGuiScaledWidth() * 0.18) - 6;
-        rectangleWidth = GuiUtil.getLongest(clientTooltipList);
+        rectangleWidth = DrawOverlay.getLongest(clientTooltipList);
         rectangleHeight = 8 + (clientTooltipList.size() > 1 ? 2 : 0) + ((clientTooltipList.size() - 1) * 10);
         rectangleX = (int) ((Minecraft.getInstance().getWindow().getGuiScaledWidth() * 0.09) - (rectangleWidth * 0.5));
         rectangleY = (int) (Minecraft.getInstance().getWindow().getGuiScaledHeight() * 0.09);
