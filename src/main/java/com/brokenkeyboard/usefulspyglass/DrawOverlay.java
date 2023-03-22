@@ -55,7 +55,7 @@ public class DrawOverlay extends GuiComponent {
         multiBufferSource.endBatch();
     }
 
-    public static void drawRect(Matrix4f matrix4f/*,BufferBuilder buffer*/, int rectX, int rectY, int rectW, int rectH) {
+    public static void drawRect(Matrix4f matrix4f, int rectX, int rectY, int rectW, int rectH) {
         int rectGradient = -267386864;
         int borderGrad1 = 1347420415;
         int borderGrad2 = 1344798847;
@@ -78,17 +78,7 @@ public class DrawOverlay extends GuiComponent {
         DrawOverlay.fillGradient(matrix4f, buffer, rectX - 3, rectY - 3, rectX + rectW + 3, rectY - 3 + 1, borderGrad1, borderGrad1);
         DrawOverlay.fillGradient(matrix4f, buffer, rectX - 3, rectY + rectH + 2, rectX + rectW + 3, rectY + rectH + 3, borderGrad2, borderGrad2);
 
-        buffer.end();
-        BufferUploader.reset();
-    }
-
-    public static int getLongest(List<ClientTooltipComponent> list) {
-        int result = 0;
-        for(ClientTooltipComponent tooltip : list) {
-            int length = (list.indexOf(tooltip) > 0 ? 9 : 0) + tooltip.getWidth(Minecraft.getInstance().font);
-            result = Math.max(length, result);
-        }
-        return result;
+        tesselator.end();
     }
 
     public static void renderIcon(int x, int y, int texX, int texY, int width, int height, int iconWidth, int iconHeight) {
@@ -112,5 +102,14 @@ public class DrawOverlay extends GuiComponent {
         buffer.vertex(x, y, zLevel).uv(((float) (texX) * f), ((float) (texY) * f1)).endVertex();
         RenderSystem.disableDepthTest();
         tesselator.end();
+    }
+
+    public static int getLongest(List<ClientTooltipComponent> list) {
+        int result = 0;
+        for(ClientTooltipComponent tooltip : list) {
+            int length = (list.indexOf(tooltip) > 0 ? 9 : 0) + tooltip.getWidth(Minecraft.getInstance().font);
+            result = Math.max(length, result);
+        }
+        return result;
     }
 }
