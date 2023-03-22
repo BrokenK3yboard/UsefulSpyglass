@@ -13,7 +13,7 @@ public class SpyglassItem extends net.minecraft.world.item.SpyglassItem {
         return true;
     }
 
-    public int getEnchantmentValue() {
+    public int getEnchantmentValue(ItemStack stack) {
         return 1;
     }
 }
