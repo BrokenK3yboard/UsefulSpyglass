@@ -5,7 +5,6 @@ import com.brokenkeyboard.usefulspyglass.network.PacketHandler;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.NeutralMob;
@@ -44,6 +43,7 @@ public class UsefulSpyglass
 
     public UsefulSpyglass() {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+        bus.addListener(InfoOverlay::registerGUI);
         ITEMS.register(bus);
         ENCHANTMENTS.register(bus);
     }
@@ -72,11 +72,11 @@ public class UsefulSpyglass
                         Component relation;
 
                         if (entity instanceof NeutralMob || entity instanceof Player) {
-                            relation = new TranslatableComponent("text." + UsefulSpyglass.MOD_ID + ".neutral").withStyle(ChatFormatting.YELLOW);
+                            relation = Component.translatable("text." + UsefulSpyglass.MOD_ID + ".neutral").withStyle(ChatFormatting.YELLOW);
                         } else if (entity.getType().getCategory().isFriendly()) {
-                            relation = new TranslatableComponent("text." + UsefulSpyglass.MOD_ID + ".friendly").withStyle(ChatFormatting.GREEN);
+                            relation = Component.translatable("text." + UsefulSpyglass.MOD_ID + ".friendly").withStyle(ChatFormatting.GREEN);
                         } else {
-                            relation = new TranslatableComponent("text." + UsefulSpyglass.MOD_ID + ".hostile").withStyle(ChatFormatting.RED);
+                            relation = Component.translatable("text." + UsefulSpyglass.MOD_ID + ".hostile").withStyle(ChatFormatting.RED);
                         }
 
                         InfoOverlay.setMobComponent(entity.getName(), relation, entity.getHealth(), entity.getArmorValue());

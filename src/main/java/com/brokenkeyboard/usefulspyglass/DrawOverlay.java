@@ -22,9 +22,7 @@ public class DrawOverlay extends GuiComponent {
     public static void drawGUI(PoseStack poseStack, List<ClientTooltipComponent> clientTooltipList, int rectangleX, int rectangleY, int rectangleWidth, int rectangleHeight) {
         poseStack.pushPose();
         int height = CLIENT.font.lineHeight;
-        int yOffset = 1;
 
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
         Matrix4f matrix4f = poseStack.last().pose();
 
         drawRect(matrix4f /*, buffer*/, rectangleX, rectangleY, rectangleWidth, rectangleHeight);
@@ -64,6 +62,7 @@ public class DrawOverlay extends GuiComponent {
 
         Tesselator tesselator = Tesselator.getInstance();
         BufferBuilder buffer = tesselator.getBuilder();
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
         buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
 
         // Top, bottom, center, left, right
@@ -80,7 +79,7 @@ public class DrawOverlay extends GuiComponent {
         DrawOverlay.fillGradient(matrix4f, buffer, rectX - 3, rectY + rectH + 2, rectX + rectW + 3, rectY + rectH + 3, borderGrad2, borderGrad2);
 
         buffer.end();
-        BufferUploader.end(buffer);
+        BufferUploader.reset();
     }
 
     public static int getLongest(List<ClientTooltipComponent> list) {
