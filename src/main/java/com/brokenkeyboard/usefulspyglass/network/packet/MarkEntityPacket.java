@@ -35,14 +35,14 @@ public class MarkEntityPacket {
         buf.writeResourceLocation(dimension);
     }
 
-    public boolean handle(Supplier<NetworkEvent.Context> supplier) {
+    public static void handle(MarkEntityPacket packet, Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context context = supplier.get();
         context.enqueueWork(() -> {
             ServerPlayer player = context.getSender();
             if (player != null) {
-                LivingEntity entity = (LivingEntity) player.getLevel().getEntity(entityID);
+                LivingEntity entity = (LivingEntity) player.getLevel().getEntity(packet.entityID);
                 if(entity != null) {
-                    if (entity.getLevel().dimension().equals(ResourceKey.create(Registry.DIMENSION_REGISTRY, dimension))) {
+                    if (entity.getLevel().dimension().equals(ResourceKey.create(Registry.DIMENSION_REGISTRY, packet.dimension))) {
                         ItemStack stack = player.getItemInHand(player.getUsedItemHand());
                         int level = EnchantmentHelper.getItemEnchantmentLevel(UsefulSpyglass.MARKING.get(), stack);
                         entity.addEffect(new MobEffectInstance(new MobEffectInstance(MobEffects.GLOWING, 80 + (40 * level - 1), 0)));
@@ -50,6 +50,6 @@ public class MarkEntityPacket {
                 }
             }
         });
-        return true;
+        supplier.get().setPacketHandled(true);
     }
 }

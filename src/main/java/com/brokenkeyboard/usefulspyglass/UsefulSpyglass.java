@@ -22,7 +22,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -34,9 +34,9 @@ public class UsefulSpyglass
     public static final String MOD_ID = "usefulspyglass";
 
     public static final DeferredRegister<Enchantment> ENCHANTMENTS = DeferredRegister.create(ForgeRegistries.ENCHANTMENTS, MOD_ID);
-    public static final EnchantmentCategory SPYGLASS_ENCH = EnchantmentCategory.create("spyglass", item -> item instanceof SpyglassItem);
+    public static final EnchantmentCategory SPYGLASS_ENCHANT = EnchantmentCategory.create("spyglass", item -> item instanceof SpyglassItem);
     public static final RegistryObject<Enchantment> MARKING = ENCHANTMENTS.register("marking", () -> new MarkingEnchantment(
-            Enchantment.Rarity.COMMON, SPYGLASS_ENCH, EquipmentSlot.MAINHAND));
+            Enchantment.Rarity.COMMON, SPYGLASS_ENCHANT, EquipmentSlot.MAINHAND));
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, "minecraft");
 
     public static final RegistryObject<Item> SPYGLASS = ITEMS.register("spyglass", () -> new
@@ -52,7 +52,7 @@ public class UsefulSpyglass
     public static class RegistryEvents {
 
         @SubscribeEvent
-        public static void setup(final FMLClientSetupEvent event) {
+        public static void setup(final FMLCommonSetupEvent event) {
             event.enqueueWork(PacketHandler::register);
         }
     }
