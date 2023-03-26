@@ -22,6 +22,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -51,7 +52,7 @@ public class UsefulSpyglass
     public static class RegistryEvents {
 
         @SubscribeEvent
-        public static void setup(final FMLClientSetupEvent event) {
+        public static void setup(final FMLCommonSetupEvent event) {
             event.enqueueWork(PacketHandler::register);
         }
     }
