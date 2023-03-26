@@ -14,6 +14,7 @@ import java.util.List;
 public class DrawOverlay extends GuiComponent {
 
     private static final Minecraft CLIENT = Minecraft.getInstance();
+    private static final int HEIGHT = CLIENT.font.lineHeight;
 
     public static void fillGradient(Matrix4f matrix, BufferBuilder buf, int x, int y, int w, int h, int start, int end) {
         fillGradient(matrix, buf, x, y, w, h, 400, start, end);
@@ -21,15 +22,14 @@ public class DrawOverlay extends GuiComponent {
 
     public static void drawGUI(PoseStack poseStack, List<ClientTooltipComponent> clientTooltipList, int rectangleX, int rectangleY, int rectangleWidth, int rectangleHeight) {
         poseStack.pushPose();
-        int height = CLIENT.font.lineHeight;
 
         Matrix4f matrix4f = poseStack.last().pose();
 
         drawRect(matrix4f /*, buffer*/, rectangleX, rectangleY, rectangleWidth, rectangleHeight);
-        DrawOverlay.renderIcon(rectangleX, rectangleY + height + (height) + 2, 52, 0, 8, 8, 9, 9);
+        DrawOverlay.renderIcon(rectangleX, rectangleY + HEIGHT + (HEIGHT) + 2, 52, 0, 8, 8, 9, 9);
 
         if(clientTooltipList.size() > 3) {
-            DrawOverlay.renderIcon(rectangleX, rectangleY + height + (height * 2) + 3, 43, 9, 8, 8, 9, 9);
+            DrawOverlay.renderIcon(rectangleX, rectangleY + HEIGHT + (HEIGHT * 2) + 3, 43, 9, 8, 8, 9, 9);
         }
 
         drawTooltip(matrix4f, clientTooltipList, rectangleX, rectangleY);
