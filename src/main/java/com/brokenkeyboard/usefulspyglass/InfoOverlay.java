@@ -14,7 +14,7 @@ import net.minecraftforge.fml.common.Mod;
 import java.util.ArrayList;
 import java.util.List;
 
-@Mod.EventBusSubscriber(value = Dist.CLIENT)
+@Mod.EventBusSubscriber(modid = UsefulSpyglass.MOD_ID, bus=Mod.EventBusSubscriber.Bus.MOD, value=Dist.CLIENT)
 public class InfoOverlay {
 
     private static final ItemStack TOOLTIP_STACK = ItemStack.EMPTY;

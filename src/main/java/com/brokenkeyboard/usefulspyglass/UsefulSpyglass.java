@@ -43,12 +43,11 @@ public class UsefulSpyglass
 
     public UsefulSpyglass() {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-        bus.addListener(InfoOverlay::registerGUI);
         ITEMS.register(bus);
         ENCHANTMENTS.register(bus);
     }
 
-    @Mod.EventBusSubscriber(modid = MOD_ID, bus=Mod.EventBusSubscriber.Bus.MOD)
+    @Mod.EventBusSubscriber(modid = MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
     public static class RegistryEvents {
 
         @SubscribeEvent
@@ -80,7 +79,7 @@ public class UsefulSpyglass
                         }
 
                         InfoOverlay.setMobComponent(entity.getName(), relation, entity.getHealth(), entity.getArmorValue());
-                        if (EnchantmentHelper.getItemEnchantmentLevel(UsefulSpyglass.MARKING.get(), stack) > 0 && !entity.isCurrentlyGlowing()) {
+                        if (EnchantmentHelper.getTagEnchantmentLevel(UsefulSpyglass.MARKING.get(), stack) > 0 && !entity.isCurrentlyGlowing()) {
                             PacketHandler.sendPacket(entity, entity.getLevel().dimension().location());
                         }
                     } else {
