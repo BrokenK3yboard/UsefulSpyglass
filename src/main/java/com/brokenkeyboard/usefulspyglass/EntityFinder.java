@@ -5,34 +5,33 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.*;
 
 public class EntityFinder {
 
-    public static HitResult getAimedEntity(Minecraft client, double distance) {
+    public static HitResult getAimedObject(Minecraft client, double distance) {
         Entity camera = client.getCameraEntity();
-
         if (camera == null) return null;
 
         Vec3 viewVec = camera.getViewVector(client.getFrameTime());
         Vec3 start = camera.getEyePosition(client.getFrameTime());
         Vec3 end = start.add(viewVec.x * distance, viewVec.y * distance, viewVec.z * distance);
 
-        BlockHitResult blockHit = camera.level.clip(new ClipContext(start, end, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, camera));
         EntityHitResult entityHit = ProjectileUtil.getEntityHitResult(camera, start, end, new AABB(start, end), EntitySelector.ENTITY_STILL_ALIVE, 0f);
+        BlockHitResult blockHit = camera.level.clip(new ClipContext(start, end, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, camera));
+        BlockState state = client.level.getBlockState(blockHit.getBlockPos());
 
-        if (entityHit != null) {
-            if (blockHit.getType() == HitResult.Type.MISS) {
-                return entityHit;
-            }
-
+        if (entityHit != null && !entityHit.getEntity().isInvisible()) {
             double blockDistance = blockHit.getLocation().distanceToSqr(start);
             double entityDistance = entityHit.getLocation().distanceToSqr(start);
 
-            if (entityDistance < blockDistance) {
+            if (blockHit.getType() == HitResult.Type.MISS || entityDistance < blockDistance)
                 return entityHit;
-            }
+
+        } else if (ClientConfig.DISPLAY_BLOCKS.get() && blockHit.getType() != HitResult.Type.MISS && !state.isAir()) {
+            return blockHit;
         }
-        return blockHit;
+        return null;
     }
 }
