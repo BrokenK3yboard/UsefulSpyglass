@@ -30,7 +30,7 @@ public class PacketHandler {
         network.messageBuilder(MarkEntityPacket.class, id(), NetworkDirection.PLAY_TO_SERVER)
                 .decoder(MarkEntityPacket::new)
                 .encoder(MarkEntityPacket::toBytes)
-                .consumer(MarkEntityPacket::handle)
+                .consumerMainThread(MarkEntityPacket::handle)
                 .add();
     }
 
