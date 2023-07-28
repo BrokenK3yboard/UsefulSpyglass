@@ -1,9 +1,11 @@
 package com.brokenkeyboard.usefulspyglass;
 
+import com.google.common.collect.Maps;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.player.Player;
@@ -16,15 +18,20 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.forgespi.language.IModInfo;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentMap;
 
 @Mod.EventBusSubscriber(modid = UsefulSpyglass.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class InfoOverlay {
 
     private static final Minecraft CLIENT = Minecraft.getInstance();
+    private static final ConcurrentMap<String, String> MOD_NAMES = getModList();
     private static HitResult hitResult = null;
     private static List<TooltipInfo> tooltipList;
     private static int rectangleWidth;
@@ -47,10 +54,27 @@ public class InfoOverlay {
         tooltipList = list;
         rectangleWidth = getLongest(tooltipList);
         rectangleHeight = 0;
+        int screenWidth = CLIENT.getWindow().getGuiScaledWidth();
+        int screenHeight = CLIENT.getWindow().getGuiScaledHeight();
+
         for (TooltipInfo tooltip : tooltipList)
             rectangleHeight += (tooltip.getHeight() + (hitResult instanceof BlockHitResult && tooltipList.size() == 1 ? 16 - tooltip.getHeight() : 0));
-        rectangleX = (int) ((CLIENT.getWindow().getGuiScaledWidth() * 0.09) - (rectangleWidth * 0.5)) + 1;
-        rectangleY = (int) (CLIENT.getWindow().getGuiScaledHeight() * 0.09);
+
+        rectangleX = (int) ((screenWidth * ClientConfig.HUD_X.get()) - (rectangleWidth * 0.5));
+
+        if (rectangleX - 4 < 0) {
+            rectangleX = 4;
+        } else if (rectangleX + rectangleWidth + 4 > screenWidth) {
+            rectangleX = screenWidth - rectangleWidth - 4;
+        }
+
+        rectangleY = (int) (CLIENT.getWindow().getGuiScaledHeight() * ClientConfig.HUD_Y.get());
+
+        if (rectangleY - 4 < 0) {
+            rectangleY = 4;
+        } else if (rectangleY + rectangleHeight + 2 > screenHeight) {
+            rectangleY = screenHeight - rectangleHeight - 4;
+        }
     }
 
     public static void setHitResult(HitResult result) {
@@ -68,12 +92,20 @@ public class InfoOverlay {
                 mobRelation = Component.translatable("text." + UsefulSpyglass.MOD_ID + ".hostile").withStyle(ChatFormatting.RED);
             }
 
-            array.add(new MobInfo(Icon.NONE, ClientTooltipComponent.create(entity.getDisplayName().getVisualOrderText())));
-            array.add(new MobInfo(Icon.NONE, ClientTooltipComponent.create(mobRelation.getVisualOrderText())));
-            array.add(new MobInfo(Icon.HEALTH, ClientTooltipComponent.create(Component.literal("x " + (int)entity.getHealth()).getVisualOrderText())));
+            array.add(new TooltipInfo.MobInfo(TooltipInfo.Icon.NONE, ClientTooltipComponent.create(entity.getDisplayName().getVisualOrderText())));
+            array.add(new TooltipInfo.MobInfo(TooltipInfo.Icon.NONE, ClientTooltipComponent.create(mobRelation.getVisualOrderText())));
+            array.add(new TooltipInfo.MobInfo(TooltipInfo.Icon.HEALTH, ClientTooltipComponent.create(Component.literal("x " + (int)entity.getHealth()).getVisualOrderText())));
 
             if (entity.getArmorValue() > 0)
-                array.add(new MobInfo(Icon.ARMOR, ClientTooltipComponent.create(Component.literal("x " + entity.getArmorValue()).getVisualOrderText())));
+                array.add(new TooltipInfo.MobInfo(TooltipInfo.Icon.ARMOR, ClientTooltipComponent.create(Component.literal("x " + entity.getArmorValue()).getVisualOrderText())));
+
+            if (ClientConfig.DISPLAY_ENTITY_NAMEPSPACE.get()) {
+                ResourceLocation location = ForgeRegistries.ENTITY_TYPES.getKey(entity.getType());
+                if (location != null && getModName(location.getNamespace()) != null) {
+                    array.add(new TooltipInfo.MobInfo(TooltipInfo.Icon.NONE, ClientTooltipComponent.create(Component.literal(getModName(location.getNamespace())).
+                            withStyle(ChatFormatting.BLUE).getVisualOrderText())));
+                }
+            }
 
             setComponent(array);
             hitResult = result;
@@ -82,110 +114,56 @@ public class InfoOverlay {
             ItemStack stack = state.getBlock().getCloneItemStack(state, blockHit, CLIENT.player.level, blockHit.getBlockPos(), CLIENT.player);
             String displayStr = state.getBlock().getName().getString();
             String[] arr = displayStr.split("\s+");
+
             if(arr.length > 1) {
                 int maxLength = (Minecraft.getInstance().getWindow().getGuiScaledWidth() / 6) - 18;
                 StringBuilder str = new StringBuilder();
                 for (String addStr : arr) {
                     if (ClientTooltipComponent.create(Component.literal(str + " " + addStr).getVisualOrderText()).getWidth(CLIENT.font) > maxLength && str.length() > 0) {
-                        array.add(new BlockInfo(stack, ClientTooltipComponent.create(Component.literal(str.toString()).getVisualOrderText())));
+                        array.add(new TooltipInfo.BlockInfo(stack, ClientTooltipComponent.create(Component.literal(str.toString()).getVisualOrderText())));
                         str = new StringBuilder();
                     }
                     if(str.length() > 0)
                         str.append(" ");
                     str.append(addStr);
                 }
-                array.add(new BlockInfo(stack, ClientTooltipComponent.create(Component.literal(str.toString()).getVisualOrderText())));
+                array.add(new TooltipInfo.BlockInfo(stack, ClientTooltipComponent.create(Component.literal(str.toString()).getVisualOrderText())));
             } else {
-                array.add(new BlockInfo(stack, ClientTooltipComponent.create(Component.literal(displayStr).getVisualOrderText())));
+                array.add(new TooltipInfo.BlockInfo(stack, ClientTooltipComponent.create(Component.literal(displayStr).getVisualOrderText())));
             }
+
+            if (ClientConfig.DISPLAY_BLOCK_NAMEPSPACE.get()) {
+                ResourceLocation location = ForgeRegistries.BLOCKS.getKey(state.getBlock());
+                if (location != null && getModName(location.getNamespace()) != null) {
+                    array.add(new TooltipInfo.BlockInfo(stack, ClientTooltipComponent.create(Component.literal(getModName(location.getNamespace())).
+                            withStyle(ChatFormatting.BLUE).getVisualOrderText())));
+                }
+            }
+
             setComponent(array);
             hitResult = result;
         }
     }
 
-    public static int getLongest(List<InfoOverlay.TooltipInfo> list) {
+    public static int getLongest(List<TooltipInfo> list) {
         int result = 0;
-        for(InfoOverlay.TooltipInfo tooltip : list)
+        for(TooltipInfo tooltip : list)
             result = Math.max(tooltip.getWidth(), result);
         return result;
     }
 
-    public static class MobInfo extends TooltipInfo {
-        private final Icon icon;
-        private final ClientTooltipComponent tooltip;
-
-        public MobInfo(Icon icon, ClientTooltipComponent tooltip) {
-            this.icon = icon;
-            this.tooltip = tooltip;
-        }
-
-        public Icon getIcon() {
-            return icon;
-        }
-
-        public ClientTooltipComponent getTooltip() {
-            return tooltip;
-        }
-
-        @Override
-        public int getWidth() {
-            return icon.ICON_WIDTH + tooltip.getWidth(Minecraft.getInstance().font);
-        }
-
-        @Override
-        public int getHeight() {
-            return tooltip.getHeight();
-        }
+    public static String getModName(String namespace) {
+        return MOD_NAMES.get(namespace);
     }
 
-    public static class BlockInfo extends TooltipInfo {
-        private final ItemStack block;
-        private final ClientTooltipComponent tooltip;
-
-        public BlockInfo(ItemStack block, ClientTooltipComponent tooltip) {
-            this.block = block;
-            this.tooltip = tooltip;
+    public static ConcurrentMap<String, String> getModList() {
+        ConcurrentMap<String, String> map = Maps.newConcurrentMap();
+        List<IModInfo> list = ModList.get().getMods();
+        for (IModInfo mod : list) {
+            String modid = mod.getModId();
+            String name = mod.getDisplayName() != null ? mod.getDisplayName() : modid;
+            map.put(modid, name);
         }
-
-        public ItemStack getBlock() {
-            return block;
-        }
-
-        public ClientTooltipComponent getTooltip() {
-            return tooltip;
-        }
-
-        @Override
-        int getWidth() {
-            return 18 + tooltip.getWidth(Minecraft.getInstance().font);
-        }
-
-        @Override
-        int getHeight() {
-            return tooltip.getHeight();
-        }
-    }
-
-    public abstract static class TooltipInfo {
-        abstract int getWidth();
-        abstract int getHeight();
-    }
-
-    enum Icon {
-        NONE(0, 0, 0, 0),
-        HEALTH(52, 0, 9, 9),
-        ARMOR(43, 9, 9, 9);
-
-        public final int ICON_X;
-        public final int ICON_Y;
-        public final int ICON_WIDTH;
-        public final int ICON_HEIGHT;
-
-        Icon(int iconX, int iconY, int iconWidth, int iconHeight) {
-            this.ICON_X = iconX;
-            this.ICON_Y = iconY;
-            this.ICON_WIDTH = iconWidth;
-            this.ICON_HEIGHT = iconHeight;
-        }
+        return map;
     }
 }

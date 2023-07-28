@@ -23,7 +23,7 @@ public class DrawOverlay extends GuiComponent {
         fillGradient(matrix, buf, x, y, w, h, 400, start, end);
     }
 
-    public static void drawGUI(PoseStack poseStack, HitResult result, List<InfoOverlay.TooltipInfo> tooltipList, int rectangleX, int rectangleY, int rectangleWidth, int rectangleHeight) {
+    public static void drawGUI(PoseStack poseStack, HitResult result, List<TooltipInfo> tooltipList, int rectangleX, int rectangleY, int rectangleWidth, int rectangleHeight) {
         poseStack.pushPose();
         Matrix4f matrix4f = poseStack.last().pose();
 
@@ -31,17 +31,17 @@ public class DrawOverlay extends GuiComponent {
         int yOffset = rectangleY;
 
         if(result instanceof BlockHitResult) {
-            renderStack(((InfoOverlay.BlockInfo)tooltipList.get(0)).getBlock(), null, rectangleX, rectangleY + rectangleHeight / 2 - 8);
+            renderStack(((TooltipInfo.BlockInfo)tooltipList.get(0)).getBlock(), null, rectangleX, rectangleY + rectangleHeight / 2 - 8);
         }
 
-        for(InfoOverlay.TooltipInfo info : tooltipList) {
-            if (info instanceof InfoOverlay.MobInfo infoLine) {
-                InfoOverlay.Icon icon = infoLine.getIcon();
+        for(TooltipInfo info : tooltipList) {
+            if (info instanceof TooltipInfo.MobInfo infoLine) {
+                TooltipInfo.Icon icon = infoLine.getIcon();
                 ClientTooltipComponent tooltip = infoLine.getTooltip();
-                if (icon != InfoOverlay.Icon.NONE)
+                if (icon != TooltipInfo.Icon.NONE)
                     renderIcon(rectangleX, yOffset, icon.ICON_X, icon.ICON_Y, 8, 8, icon.ICON_WIDTH, icon.ICON_HEIGHT);
                 renderText(matrix4f, tooltip, rectangleX + icon.ICON_WIDTH + 1, yOffset);
-            } if (info instanceof InfoOverlay.BlockInfo blockInfo) {
+            } if (info instanceof TooltipInfo.BlockInfo blockInfo) {
                 ClientTooltipComponent tooltip = blockInfo.getTooltip();
                 if(tooltipList.size() == 1) {
                     renderText(matrix4f, tooltip, rectangleX + 18, yOffset + (rectangleHeight / 2) - (CLIENT.font.lineHeight / 2));
