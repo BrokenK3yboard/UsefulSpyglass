@@ -22,7 +22,7 @@ public class EntityFinder {
         BlockHitResult blockHit = camera.level.clip(new ClipContext(start, end, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, camera));
         BlockState state = client.level.getBlockState(blockHit.getBlockPos());
 
-        if (entityHit != null && !entityHit.getEntity().isInvisible()) {
+        if (ClientConfig.DISPLAY_ENTITIES.get() && entityHit != null && !entityHit.getEntity().isInvisible()) {
             double blockDistance = blockHit.getLocation().distanceToSqr(start);
             double entityDistance = entityHit.getLocation().distanceToSqr(start);
 
