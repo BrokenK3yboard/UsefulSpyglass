@@ -1,24 +1,24 @@
 modLoader="javafml"
 loaderVersion="[40,)"
-license="GPL 3.0"
+license="GPLv3"
 
 [[mods]]
 modId="usefulspyglass"
-version="0.3.0"
+version="${file.jarVersion}"
 displayName="Useful Spyglass"
-logoFile="examplemod.png"
+logoFile="usefulspyglass.png"
 credits="BrokenKeyboard"
 authors="BrokenKeyboard"
 description='''This mod allows players to view information on mobs when viewing them through a spyglass. Also adds spyglass enchantments.'''
 
-[[dependencies.spyglass]]
+[[dependencies.usefulspyglass]]
     modId="forge"
     mandatory=true
     versionRange="[40,)"
     ordering="NONE"
     side="BOTH"
 
-[[dependencies.spyglass]]
+[[dependencies.usefulspyglass]]
     modId="minecraft"
     mandatory=true
     versionRange="[1.18.2]"

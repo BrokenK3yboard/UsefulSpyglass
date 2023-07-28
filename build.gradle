@@ -7,12 +7,10 @@ buildscript {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
     }
 }
-plugins {
-    id 'eclipse'
-    id 'maven-publish'
-}
-apply plugin: 'net.minecraftforge.gradle'
 
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'idea'
+apply plugin: 'maven-publish'
 
 version = "${mod_version}"
 group = 'com.brokenkeyboard.usefulspyglass'
