@@ -19,7 +19,7 @@ public class EntityFinder {
         Vec3 end = start.add(viewVec.x * distance, viewVec.y * distance, viewVec.z * distance);
 
         EntityHitResult entityHit = ProjectileUtil.getEntityHitResult(camera, start, end, new AABB(start, end), EntitySelector.ENTITY_STILL_ALIVE, 0f);
-        BlockHitResult blockHit = camera.level.clip(new ClipContext(start, end, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, camera));
+        BlockHitResult blockHit = camera.level().clip(new ClipContext(start, end, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, camera));
         BlockState state = client.level.getBlockState(blockHit.getBlockPos());
 
         if (ClientConfig.DISPLAY_ENTITIES.get() && entityHit != null && !entityHit.getEntity().isInvisible()) {

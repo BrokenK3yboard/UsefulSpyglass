@@ -6,7 +6,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpyglassItem;
@@ -38,7 +37,7 @@ public class UsefulSpyglass
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, "minecraft");
 
     public static final RegistryObject<Item> SPYGLASS = ITEMS.register("spyglass", () -> new
-            com.brokenkeyboard.usefulspyglass.SpyglassItem((new Item.Properties()).tab(CreativeModeTab.TAB_TOOLS).stacksTo(1)));
+            com.brokenkeyboard.usefulspyglass.SpyglassItem(new Item.Properties().stacksTo(1)));
 
     public UsefulSpyglass() {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -69,7 +68,7 @@ public class UsefulSpyglass
                 ItemStack stack = player.getItemInHand(player.getUsedItemHand());
                 if (EnchantmentHelper.getTagEnchantmentLevel(UsefulSpyglass.MARKING.get(), stack) > 0 && result instanceof EntityHitResult entityHit &&
                         entityHit.getEntity() instanceof LivingEntity entity && !entity.isCurrentlyGlowing()) {
-                    PacketHandler.sendPacket(entity, entity.getLevel().dimension().location());
+                    PacketHandler.sendPacket(entity, entity.level().dimension().location());
                 }
             } else {
                 InfoOverlay.setHitResult(null);

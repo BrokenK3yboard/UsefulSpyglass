@@ -1,20 +1,13 @@
-buildscript {
-    repositories {
-        maven { url = 'https://maven.minecraftforge.net' }
-        mavenCentral()
-    }
-    dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
-    }
+plugins {
+    id 'eclipse'
+    id 'idea'
+    id 'maven-publish'
+    id 'net.neoforged.gradle' version '[6.0.18,6.2)'
 }
-
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'idea'
-apply plugin: 'maven-publish'
 
 version = "${mod_version}"
 group = 'com.brokenkeyboard.usefulspyglass'
-archivesBaseName = "${mod_name}-${mod_loader}-${minecraft_version}"
+archivesBaseName = "${mod_id}-${mod_loader}-${minecraft_version}"
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
@@ -23,61 +16,34 @@ minecraft {
     // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg') // Currently, this location cannot be changed from the default.
 
     runs {
-        client {
+        configureEach {
             workingDirectory project.file('run')
-
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
-            property 'forge.enabledGameTestNamespaces', 'usefulspyglass'
 
             mods {
-                usefulspyglass {
+                "${mod_id}" {
                     source sourceSets.main
                 }
             }
+        }
+
+        client {
+            property 'forge.enabledGameTestNamespaces', mod_id
         }
 
         server {
-            workingDirectory project.file('run')
-
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            property 'forge.enabledGameTestNamespaces', 'usefulspyglass'
-
-            mods {
-                usefulspyglass {
-                    source sourceSets.main
-                }
-            }
+            property 'forge.enabledGameTestNamespaces', mod_id
+            args '--nogui'
         }
 
         gameTestServer {
-            workingDirectory project.file('run')
-
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            property 'forge.enabledGameTestNamespaces', 'usefulspyglass'
-
-            mods {
-                usefulspyglass {
-                    source sourceSets.main
-                }
-            }
+            property 'forge.enabledGameTestNamespaces', mod_id
         }
 
         data {
-            workingDirectory project.file('run')
-
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-
-            args '--mod', 'usefulspyglass', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
-
-            mods {
-                usefulspyglass {
-                    source sourceSets.main
-                }
-            }
+            workingDirectory project.file('run-data')
+            args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
         }
     }
 }
@@ -88,26 +54,26 @@ repositories {
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    minecraft "net.neoforged:forge:${minecraft_version}-${neo_version}"
 }
 
-jar {
+tasks.named('jar', Jar).configure {
     manifest {
         attributes([
-                "Specification-Title"     : "${mod_name}",
+                "Specification-Title"     : "${mod_id}",
                 "Specification-Vendor"    : "BrokenKeyboard",
                 "Specification-Version"   : "1",
-                "Implementation-Title"    : "${mod_name}",
+                "Implementation-Title"    : "${mod_id}",
                 "Implementation-Version"  : project.jar.archiveVersion,
                 "Implementation-Vendor"   : "BrokenKeyboard",
         ])
     }
+    finalizedBy 'reobfJar'
 }
-jar.finalizedBy('reobfJar')
 
 publishing {
     publications {
-        mavenJava(MavenPublication) {
+        register('mavenJava', MavenPublication) {
             artifact jar
         }
     }

@@ -110,8 +110,8 @@ public class InfoOverlay {
             setComponent(array);
             hitResult = result;
         } else if (result instanceof BlockHitResult blockHit) {
-            BlockState state = CLIENT.player.level.getBlockState(blockHit.getBlockPos());
-            ItemStack stack = state.getBlock().getCloneItemStack(state, blockHit, CLIENT.player.level, blockHit.getBlockPos(), CLIENT.player);
+            BlockState state = CLIENT.player.level().getBlockState(blockHit.getBlockPos());
+            ItemStack stack = state.getBlock().getCloneItemStack(state, blockHit, CLIENT.player.level(), blockHit.getBlockPos(), CLIENT.player);
             String displayStr = state.getBlock().getName().getString();
             String[] arr = displayStr.split("\s+");
 

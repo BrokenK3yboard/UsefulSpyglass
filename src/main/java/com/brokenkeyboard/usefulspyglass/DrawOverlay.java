@@ -2,63 +2,58 @@ package com.brokenkeyboard.usefulspyglass;
 
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
-import com.mojang.math.Matrix4f;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.gui.screens.inventory.tooltip.TooltipRenderUtil;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
 import java.util.List;
 
-public class DrawOverlay extends GuiComponent {
+public class DrawOverlay {
 
     private static final Minecraft CLIENT = Minecraft.getInstance();
+    protected static final ResourceLocation GUI_ICONS_LOCATION = new ResourceLocation("textures/gui/icons.png");
+    private static final int BACKGROUND_COLOR = -267386864;
+    private static final int BORDER_COLOR_TOP = 1347420415;
+    private static final int BORDER_COLOR_BOTTOM = 1344798847;
 
-    public static void fillGradient(Matrix4f matrix, BufferBuilder buf, int x, int y, int w, int h, int start, int end) {
-        fillGradient(matrix, buf, x, y, w, h, 400, start, end);
-    }
-
-    public static void drawGUI(PoseStack poseStack, HitResult result, List<TooltipInfo> tooltipList, int rectangleX, int rectangleY, int rectangleWidth, int rectangleHeight) {
-        poseStack.pushPose();
-        Matrix4f matrix4f = poseStack.last().pose();
-
-        drawRect(matrix4f, rectangleX, rectangleY, rectangleWidth, rectangleHeight);
-        int yOffset = rectangleY;
+    public static void drawGUI(GuiGraphics graphics, HitResult result, List<TooltipInfo> tooltipList, int rectX, int rectY, int rectW, int rectH) {
+        graphics.pose().pushPose();
 
         if(result instanceof BlockHitResult) {
-            renderStack(((TooltipInfo.BlockInfo)tooltipList.get(0)).getBlock(), null, rectangleX, rectangleY + rectangleHeight / 2 - 8);
+            renderStack(graphics, ((TooltipInfo.BlockInfo)tooltipList.get(0)).getBlock(), null, rectX, rectY + rectH / 2 - 8);
         }
+
+        TooltipRenderUtil.renderTooltipBackground(graphics, rectX, rectY, rectW, rectH, 400, BACKGROUND_COLOR, BACKGROUND_COLOR, BORDER_COLOR_TOP, BORDER_COLOR_BOTTOM);
+        int yOffset = rectY;
 
         for(TooltipInfo info : tooltipList) {
             if (info instanceof TooltipInfo.MobInfo infoLine) {
                 TooltipInfo.Icon icon = infoLine.getIcon();
                 ClientTooltipComponent tooltip = infoLine.getTooltip();
                 if (icon != TooltipInfo.Icon.NONE)
-                    renderIcon(rectangleX, yOffset, icon.ICON_X, icon.ICON_Y, 8, 8, icon.ICON_WIDTH, icon.ICON_HEIGHT);
-                renderText(matrix4f, tooltip, rectangleX + icon.ICON_WIDTH + 1, yOffset);
+                    renderIcon(rectX, yOffset, icon.ICON_X, icon.ICON_Y, 8, 8, icon.ICON_WIDTH, icon.ICON_HEIGHT);
+                tooltip.renderText(CLIENT.font, rectX + icon.ICON_WIDTH + 1, yOffset, graphics.pose().last().pose(), graphics.bufferSource());
             } if (info instanceof TooltipInfo.BlockInfo blockInfo) {
                 ClientTooltipComponent tooltip = blockInfo.getTooltip();
                 if(tooltipList.size() == 1) {
-                    renderText(matrix4f, tooltip, rectangleX + 18, yOffset + (rectangleHeight / 2) - (CLIENT.font.lineHeight / 2));
+                    tooltip.renderText(CLIENT.font, rectX + 18, yOffset + (rectH / 2) - (CLIENT.font.lineHeight / 2), graphics.pose().last().pose(), graphics.bufferSource());
                 } else {
-                    renderText(matrix4f, tooltip, rectangleX + 18, yOffset);
+                    tooltip.renderText(CLIENT.font, rectX + 18, yOffset, graphics.pose().last().pose(), graphics.bufferSource());
                 }
             }
             yOffset += info.getHeight();
         }
-        poseStack.translate(0.0D, 0.0D, 400.0D);
-        poseStack.popPose();
-    }
-
-    public static void renderText(Matrix4f matrix4f, ClientTooltipComponent component, int textX, int textY) {
-        MultiBufferSource.BufferSource multiBufferSource = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
-        component.renderText(Minecraft.getInstance().font, textX, textY, matrix4f, multiBufferSource);
-        multiBufferSource.endBatch();
+        graphics.pose().popPose();
     }
 
     public static void renderIcon(int x, int y, int texX, int texY, int width, int height, int iconWidth, int iconHeight) {
@@ -68,7 +63,7 @@ public class DrawOverlay extends GuiComponent {
 
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, GuiComponent.GUI_ICONS_LOCATION);
+        RenderSystem.setShaderTexture(0, GUI_ICONS_LOCATION);
 
         Tesselator tesselator = Tesselator.getInstance();
         BufferBuilder buffer = tesselator.getBuilder();
@@ -83,38 +78,12 @@ public class DrawOverlay extends GuiComponent {
         tesselator.end();
     }
 
-    public static void renderStack(ItemStack stack, String countText, int x, int y) {
+    public static void renderStack(GuiGraphics graphics, ItemStack stack, String countText, int x, int y) {
         Lighting.setupFor3DItems();
         RenderSystem.enableDepthTest();
-        CLIENT.getItemRenderer().renderGuiItem(stack, x, y);
-        CLIENT.getItemRenderer().renderGuiItemDecorations(CLIENT.font, stack, x, y, countText);
+        graphics.renderItem(stack, x, y);
+        graphics.renderItemDecorations(CLIENT.font, stack, x, y, countText);
         Lighting.setupForFlatItems();
         RenderSystem.disableDepthTest();
-    }
-
-    public static void drawRect(Matrix4f matrix4f, int rectX, int rectY, int rectW, int rectH) {
-        int rectGradient = -267386864;
-        int borderGrad1 = 1347420415;
-        int borderGrad2 = 1344798847;
-
-        Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder buffer = tesselator.getBuilder();
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
-        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-
-        // Top, bottom, center, left, right
-        DrawOverlay.fillGradient(matrix4f, buffer, rectX - 3, rectY - 4, rectX + rectW + 3, rectY - 3, rectGradient, rectGradient);
-        DrawOverlay.fillGradient(matrix4f, buffer, rectX - 3, rectY + rectH + 3, rectX + rectW + 3, rectY + rectH + 4, rectGradient, rectGradient);
-        DrawOverlay.fillGradient(matrix4f, buffer, rectX - 3, rectY - 3, rectX + rectW + 3, rectY + rectH + 3, rectGradient, rectGradient);
-        DrawOverlay.fillGradient(matrix4f, buffer, rectX - 4, rectY - 3, rectX - 3, rectY + rectH + 3, rectGradient, rectGradient);
-        DrawOverlay.fillGradient(matrix4f, buffer, rectX + rectW + 3, rectY - 3, rectX + rectW + 4, rectY + rectH + 3, rectGradient, rectGradient);
-
-        // Left, right, top, bottom
-        DrawOverlay.fillGradient(matrix4f, buffer, rectX - 3, rectY - 3 + 1, rectX - 3 + 1, rectY + rectH + 3 - 1, borderGrad1, borderGrad2);
-        DrawOverlay.fillGradient(matrix4f, buffer, rectX + rectW + 2, rectY - 3 + 1, rectX + rectW + 3, rectY + rectH + 3 - 1, borderGrad1, borderGrad2);
-        DrawOverlay.fillGradient(matrix4f, buffer, rectX - 3, rectY - 3, rectX + rectW + 3, rectY - 3 + 1, borderGrad1, borderGrad1);
-        DrawOverlay.fillGradient(matrix4f, buffer, rectX - 3, rectY + rectH + 2, rectX + rectW + 3, rectY + rectH + 3, borderGrad2, borderGrad2);
-        buffer.endVertex();
-        tesselator.end();
     }
 }

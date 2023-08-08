@@ -1,7 +1,7 @@
 package com.brokenkeyboard.usefulspyglass.network.packet;
 
 import com.brokenkeyboard.usefulspyglass.UsefulSpyglass;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -40,9 +40,9 @@ public class MarkEntityPacket {
         context.enqueueWork(() -> {
             ServerPlayer player = context.getSender();
             if (player != null) {
-                LivingEntity entity = (LivingEntity) player.getLevel().getEntity(packet.entityID);
+                LivingEntity entity = (LivingEntity) player.level().getEntity(packet.entityID);
                 if(entity != null) {
-                    if (entity.getLevel().dimension().equals(ResourceKey.create(Registry.DIMENSION_REGISTRY, packet.dimension))) {
+                    if (entity.level().dimension().equals(ResourceKey.create(Registries.DIMENSION, packet.dimension))) {
                         ItemStack stack = player.getItemInHand(player.getUsedItemHand());
                         int level = EnchantmentHelper.getTagEnchantmentLevel(UsefulSpyglass.MARKING.get(), stack);
                         entity.addEffect(new MobEffectInstance(new MobEffectInstance(MobEffects.GLOWING, 80 + (40 * level - 1), 0)));
