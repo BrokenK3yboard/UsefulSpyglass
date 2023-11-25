@@ -11,6 +11,7 @@ import net.minecraft.world.item.SpyglassItem;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
@@ -79,8 +80,9 @@ public class UsefulSpyglass {
         @SubscribeEvent
         public static void registerGUI(RegisterGuiOverlaysEvent event) {
             event.registerAbove(VanillaGuiOverlay.DEBUG_TEXT.id(), "hud_base", (gui, poseStack, partialTick, width, height) -> {gui.setupOverlayRenderState(true, false);
-                if (hitResult != null) {
-                    DrawOverlay.drawGUI(poseStack, hitResult, tooltipList, rectangleX, rectangleY, rectangleWidth, rectangleHeight);
+                if (hitResult != null && ((hitResult instanceof EntityHitResult && ClientConfig.DISPLAY_ENTITIES.get() ||
+                        hitResult instanceof BlockHitResult && ClientConfig.DISPLAY_BLOCKS.get()))) {
+                    DrawOverlay.drawGUI(poseStack, tooltipList, rectangleX, rectangleY, rectangleWidth, rectangleHeight);
                 }
             });
         }

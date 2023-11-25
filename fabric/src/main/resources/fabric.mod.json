@@ -1,6 +1,6 @@
 {
     "schemaVersion": 1,
-    "id": "mod_id",
+    "id": "usefulspyglass",
     "version": "${version}",
     "name": "${mod_name}",
     "description": "${description}",
@@ -8,8 +8,8 @@
         "${mod_author}"
     ],
     "contact": {
-        "homepage": "https://fabricmc.net/",
-        "sources": "https://github.com/FabricMC/fabric-example-mod"
+        "homepage": "https://modrinth.com/mod/useful-spyglass",
+        "sources": "https://github.com/BrokenK3yboard/UsefulSpyglass"
     },
     "license": "${license}",
     "icon": "assets/modid/${mod_id}.png",
@@ -36,4 +36,3 @@
         "another-mod": "*"
     }
 }
-  

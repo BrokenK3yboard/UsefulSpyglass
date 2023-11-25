@@ -1,6 +1,5 @@
 package com.brokenkeyboard.usefulspyglass.mixin;
 
-import com.brokenkeyboard.usefulspyglass.UsefulSpyglass;
 import com.brokenkeyboard.usefulspyglass.enchantment.MarkingEnchantment;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;

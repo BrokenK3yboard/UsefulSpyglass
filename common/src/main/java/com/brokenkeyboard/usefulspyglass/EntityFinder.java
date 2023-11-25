@@ -22,14 +22,14 @@ public class EntityFinder {
         BlockHitResult blockHit = camera.level().clip(new ClipContext(start, end, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, camera));
         BlockState state = client.level.getBlockState(blockHit.getBlockPos());
 
-        if (ClientConfig.DISPLAY_ENTITIES.get() && entityHit != null && !entityHit.getEntity().isInvisible()) {
+        if (entityHit != null && !entityHit.getEntity().isInvisible()) {
             double blockDistance = blockHit.getLocation().distanceToSqr(start);
             double entityDistance = entityHit.getLocation().distanceToSqr(start);
 
             if (blockHit.getType() == HitResult.Type.MISS || entityDistance < blockDistance)
                 return entityHit;
 
-        } else if (ClientConfig.DISPLAY_BLOCKS.get() && blockHit.getType() != HitResult.Type.MISS && !state.isAir()) {
+        } else if (blockHit.getType() != HitResult.Type.MISS && !state.isAir()) {
             return blockHit;
         }
         return null;

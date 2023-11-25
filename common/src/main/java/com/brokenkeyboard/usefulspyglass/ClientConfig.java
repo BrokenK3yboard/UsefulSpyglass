@@ -7,10 +7,7 @@ public class ClientConfig {
     public static final ForgeConfigSpec SPEC;
     public static ForgeConfigSpec.BooleanValue DISPLAY_ENTITIES;
     public static ForgeConfigSpec.BooleanValue DISPLAY_BLOCKS;
-    public static ForgeConfigSpec.BooleanValue DISPLAY_ENTITY_NAMEPSPACE;
-    public static ForgeConfigSpec.BooleanValue DISPLAY_BLOCK_NAMEPSPACE;
-    public static ForgeConfigSpec.DoubleValue HUD_X;
-    public static ForgeConfigSpec.DoubleValue HUD_Y;
+    public static ForgeConfigSpec.IntValue DISPLAY_POSITION;
 
     static {
         ForgeConfigSpec.Builder configBuilder = new ForgeConfigSpec.Builder();
@@ -28,20 +25,8 @@ public class ClientConfig {
                 .comment("If enabled, block image and name will be displayed.")
                 .define("Display blocks", true);
 
-        DISPLAY_ENTITY_NAMEPSPACE = builder
-                .comment("If enabled, entity namespace will be displayed.")
-                .define("Display entity namespace", true);
-
-        DISPLAY_BLOCK_NAMEPSPACE = builder
-                .comment("If enabled, block namespace will be displayed.")
-                .define("Display block namespace", true);
-
-        HUD_X = builder
-                .comment("Change the horizontal position of the HUD (center alignment). Default 0.09.")
-                .defineInRange("Horizontal position", 0.09, 0, 1);
-
-        HUD_Y = builder
-                .comment("Change the horizontal position of the HUD. Default 0.09.")
-                .defineInRange("Vertical position", 0.09, 0, 1);
+        DISPLAY_POSITION = builder
+                .comment("Change the HUD position when viewing blocks/entities. 0 for bottom, 1 for center, 2 for top.")
+                .defineInRange("HUD position", 0, 0, 2);
     }
 }
