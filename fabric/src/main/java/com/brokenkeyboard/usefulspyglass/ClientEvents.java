@@ -23,9 +23,9 @@ public final class ClientEvents implements ClientModInitializer {
     public void onInitializeClient() {
         ClientTickEvents.END_CLIENT_TICK.register(ClientEvents::onClientTick);
         HudRenderCallback.EVENT.register((graphics, tickDelta) -> {
-            if (hitResult != null && ((hitResult instanceof EntityHitResult && ClientConfig.DISPLAY_ENTITIES.get() ||
-                    hitResult instanceof BlockHitResult && ClientConfig.DISPLAY_BLOCKS.get()))) {
-                DrawOverlay.drawGUI(graphics, tooltipList, rectangleX, rectangleY, rectangleWidth, rectangleHeight);
+            if (hitResult != null && ((hitResult instanceof EntityHitResult && ClientConfig.DISPLAY_ENTITIES.get()) ||
+                    (hitResult instanceof BlockHitResult && ClientConfig.DISPLAY_BLOCKS.get()))) {
+                DrawOverlay.drawGUI(graphics, hitResult, tooltipList, rectangleX, rectangleY, rectangleWidth, rectangleHeight);
             }
         });
     }

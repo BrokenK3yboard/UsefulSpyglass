@@ -28,7 +28,7 @@ public abstract class TooltipInfo {
     }
 
     public static class MobInfo extends TooltipInfo {
-        public Map<Icon, ClientTooltipComponent> MOB_INFO;
+        public final Map<Icon, ClientTooltipComponent> MOB_INFO;
 
         public MobInfo(Map<Icon, ClientTooltipComponent> map) {
             this.MOB_INFO = map;
@@ -41,6 +41,24 @@ public abstract class TooltipInfo {
                 width += (entry.getValue().getWidth(Minecraft.getInstance().font) + entry.getKey().ICON_WIDTH + 4);
             }
             return width;
+        }
+
+        @Override
+        public int getHeight() {
+            return Minecraft.getInstance().font.lineHeight;
+        }
+    }
+
+    public static class BlockInfo extends TooltipInfo {
+        public final ClientTooltipComponent TOOLTIP;
+
+        public BlockInfo(ClientTooltipComponent tooltip) {
+            this.TOOLTIP = tooltip;
+        }
+
+        @Override
+        int getWidth() {
+            return 18 + TOOLTIP.getWidth(Minecraft.getInstance().font);
         }
 
         @Override

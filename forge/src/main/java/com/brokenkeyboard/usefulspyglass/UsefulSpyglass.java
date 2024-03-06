@@ -75,14 +75,14 @@ public class UsefulSpyglass {
     }
 
     @Mod.EventBusSubscriber(modid = Constants.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-    public class OverlayEvent {
+    public static class OverlayEvent {
 
         @SubscribeEvent
         public static void registerGUI(RegisterGuiOverlaysEvent event) {
-            event.registerAbove(VanillaGuiOverlay.DEBUG_TEXT.id(), "hud_base", (gui, poseStack, partialTick, width, height) -> {gui.setupOverlayRenderState(true, false);
-                if (hitResult != null && ((hitResult instanceof EntityHitResult && ClientConfig.DISPLAY_ENTITIES.get() ||
-                        hitResult instanceof BlockHitResult && ClientConfig.DISPLAY_BLOCKS.get()))) {
-                    DrawOverlay.drawGUI(poseStack, tooltipList, rectangleX, rectangleY, rectangleWidth, rectangleHeight);
+            event.registerAboveAll("hud_base", (gui, poseStack, partialTick, width, height) -> {gui.setupOverlayRenderState(true, false);
+                if (hitResult != null && ((hitResult instanceof EntityHitResult && ClientConfig.DISPLAY_ENTITIES.get()) ||
+                        (hitResult instanceof BlockHitResult && ClientConfig.DISPLAY_BLOCKS.get()))) {
+                    DrawOverlay.drawGUI(poseStack, hitResult, tooltipList, rectangleX, rectangleY, rectangleWidth, rectangleHeight);
                 }
             });
         }

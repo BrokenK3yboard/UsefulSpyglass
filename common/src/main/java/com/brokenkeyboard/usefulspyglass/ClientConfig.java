@@ -7,7 +7,8 @@ public class ClientConfig {
     public static final ForgeConfigSpec SPEC;
     public static ForgeConfigSpec.BooleanValue DISPLAY_ENTITIES;
     public static ForgeConfigSpec.BooleanValue DISPLAY_BLOCKS;
-    public static ForgeConfigSpec.IntValue DISPLAY_POSITION;
+    public static ForgeConfigSpec.DoubleValue HUD_X;
+    public static ForgeConfigSpec.DoubleValue HUD_Y;
 
     static {
         ForgeConfigSpec.Builder configBuilder = new ForgeConfigSpec.Builder();
@@ -25,8 +26,12 @@ public class ClientConfig {
                 .comment("If enabled, block image and name will be displayed.")
                 .define("Display blocks", true);
 
-        DISPLAY_POSITION = builder
-                .comment("Change the HUD position when viewing blocks/entities. 0 for bottom, 1 for center, 2 for top.")
-                .defineInRange("HUD position", 0, 0, 2);
+        HUD_X = builder
+                .comment("Change the horizontal position of the HUD (center alignment). Default 0.09.")
+                .defineInRange("Horizontal position", 0.5, 0, 1);
+
+        HUD_Y = builder
+                .comment("Change the horizontal position of the HUD. Default 0.09.")
+                .defineInRange("Vertical position", 0.05, 0, 1);
     }
 }

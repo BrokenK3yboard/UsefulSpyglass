@@ -29,49 +29,85 @@ public class InfoOverlay {
     public static int rectangleY;
 
     private static void setComponent(List<TooltipInfo> list) {
+
         tooltipList = list;
         rectangleWidth = getLongest(tooltipList);
         rectangleHeight = 0;
-        rectangleX = (int) ((CLIENT.getWindow().getGuiScaledWidth() * 0.5) - (rectangleWidth * 0.5));
-        rectangleY = getPosition();
-        for (TooltipInfo tooltip : tooltipList)
-            rectangleHeight += tooltip.getHeight();
+        int screenWidth = CLIENT.getWindow().getGuiScaledWidth();
+        int screenHeight = CLIENT.getWindow().getGuiScaledHeight();
+
+        for (TooltipInfo tooltip : tooltipList) {
+            rectangleHeight += (tooltip.getHeight() + (hitResult instanceof BlockHitResult && tooltipList.size() == 1 ? 16 - tooltip.getHeight() : 0));
+        }
+
+        rectangleX = (int) ((screenWidth * ClientConfig.HUD_X.get()) - (rectangleWidth * 0.5));
+
+        if (rectangleX - 4 < 0) {
+            rectangleX = 4;
+        } else if (rectangleX + rectangleWidth + 4 > screenWidth) {
+            rectangleX = screenWidth - rectangleWidth - 4;
+        }
+
+        rectangleY = (int) (CLIENT.getWindow().getGuiScaledHeight() * ClientConfig.HUD_Y.get());
+
+        if (rectangleY - 4 < 0) {
+            rectangleY = 4;
+        } else if (rectangleY + rectangleHeight + 2 > screenHeight) {
+            rectangleY = screenHeight - rectangleHeight - 4;
+        }
     }
 
     public static void setHitResult(HitResult result) {
         hitResult = result;
         if (hitResult == null) return;
-        ArrayList<TooltipInfo> array = new ArrayList<>();
+
+        ArrayList<TooltipInfo> tooltipList = new ArrayList<>();
+
         if(hitResult instanceof EntityHitResult entityHit && entityHit.getEntity() instanceof LivingEntity entity) {
             Component name = Component.literal(entity.getDisplayName().getString()).withStyle(getColor(entity));
-            array.add(new TooltipInfo.TextTooltip(ClientTooltipComponent.create(name.getVisualOrderText())));
+            tooltipList.add(new TooltipInfo.TextTooltip(ClientTooltipComponent.create(name.getVisualOrderText())));
+
             Map<TooltipInfo.Icon, ClientTooltipComponent> map = new HashMap<>();
             map.put(TooltipInfo.Icon.HEALTH, ClientTooltipComponent.create(Component.literal(String.valueOf((int)entity.getHealth())).getVisualOrderText()));
+
             if (entity.getArmorValue() > 0) {
                 map.put(TooltipInfo.Icon.ARMOR, ClientTooltipComponent.create(Component.literal(String.valueOf(entity.getArmorValue())).getVisualOrderText()));
             }
-            array.add(new TooltipInfo.MobInfo(map));
-            setComponent(array);
-        } else if (result instanceof BlockHitResult blockHit) {
+
+            tooltipList.add(new TooltipInfo.MobInfo(map));
+            setComponent(tooltipList);
+        } else if (hitResult instanceof BlockHitResult blockHit && CLIENT.player != null) {
             BlockState state = CLIENT.player.level().getBlockState(blockHit.getBlockPos());
-            array.add(new TooltipInfo.TextTooltip(ClientTooltipComponent.create(Component.literal(state.getBlock().getName().getString()).getVisualOrderText())));
-            setComponent(array);
+            String displayStr = state.getBlock().getName().getString();
+            String[] arr = displayStr.split(" +");
+
+            if(arr.length > 1) {
+                int maxLength = (Minecraft.getInstance().getWindow().getGuiScaledWidth() / 5);
+                StringBuilder str = new StringBuilder();
+                for (String addStr : arr) {
+                    if (ClientTooltipComponent.create(Component.literal(str + " " + addStr).getVisualOrderText()).getWidth(CLIENT.font) > maxLength && !str.isEmpty()) {
+                        tooltipList.add(new TooltipInfo.BlockInfo(ClientTooltipComponent.create(Component.literal(str.toString()).getVisualOrderText())));
+                        str = new StringBuilder();
+                    }
+                    if(!str.isEmpty()) {
+                        str.append(" ");
+                    }
+                    str.append(addStr);
+                }
+                tooltipList.add(new TooltipInfo.BlockInfo(ClientTooltipComponent.create(Component.literal(str.toString()).getVisualOrderText())));
+            } else {
+                tooltipList.add(new TooltipInfo.BlockInfo(ClientTooltipComponent.create(Component.literal(displayStr).getVisualOrderText())));
+            }
+            setComponent(tooltipList);
         }
     }
 
     public static int getLongest(List<TooltipInfo> list) {
         int result = 0;
-        for(TooltipInfo tooltip : list)
+        for(TooltipInfo tooltip : list) {
             result = Math.max(tooltip.getWidth(), result);
+        }
         return result;
-    }
-
-    public static int getPosition() {
-        return switch (ClientConfig.DISPLAY_POSITION.get()) {
-            case 2 -> 10;
-            case 1 -> (int) (CLIENT.getWindow().getGuiScaledHeight() * 0.5 + 10);
-            default -> CLIENT.getWindow().getGuiScaledHeight() - 70;
-        };
     }
 
     public static ChatFormatting getColor(LivingEntity entity) {
