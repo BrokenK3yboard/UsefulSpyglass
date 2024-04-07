@@ -20,12 +20,12 @@ public class DrawOverlay {
     private static final Minecraft CLIENT = Minecraft.getInstance();
     private static final ResourceLocation GUI_ICONS_LOCATION = new ResourceLocation("textures/gui/icons.png");
 
+    @SuppressWarnings("deprecation")
     public static void drawGUI(GuiGraphics graphics, HitResult result, List<TooltipInfo> tooltipList, int rectX, int rectY, int rectW, int rectH) {
         graphics.pose().pushPose();
+        graphics.drawManaged(() -> TooltipRenderUtil.renderTooltipBackground(graphics, rectX, rectY, rectW, rectH, 400));
 
-        TooltipRenderUtil.renderTooltipBackground(graphics, rectX, rectY, rectW, rectH, 400);
-
-        if(result instanceof BlockHitResult blockHit && CLIENT.player != null) {
+        if (result instanceof BlockHitResult blockHit && CLIENT.player != null) {
             BlockState state = CLIENT.player.level().getBlockState(blockHit.getBlockPos());
             ItemStack stack = state.getBlock().getCloneItemStack(CLIENT.player.level(), blockHit.getBlockPos(), state);
             renderStack(graphics, stack, null, rectX, rectY + rectH / 2 - 8);
@@ -34,7 +34,7 @@ public class DrawOverlay {
         int yOffset = rectY;
         for (TooltipInfo info : tooltipList) {
             if (info instanceof TooltipInfo.TextTooltip infoLine) {
-                infoLine.TOOLTIP.renderText(CLIENT.font, rectX, yOffset, graphics.pose().last().pose(), graphics.bufferSource());
+                renderText(graphics, infoLine.TOOLTIP, rectX, yOffset);
             } else if (info instanceof TooltipInfo.MobInfo infoLine) {
                 int xOffset = rectX;
                 for (Map.Entry<TooltipInfo.Icon, ClientTooltipComponent> entry : infoLine.MOB_INFO.entrySet()) {
@@ -43,15 +43,22 @@ public class DrawOverlay {
                     }
                     renderIcon(graphics, xOffset, yOffset, entry.getKey().ICON_X, entry.getKey().ICON_Y);
                     xOffset += entry.getKey().ICON_WIDTH + 2;
-                    entry.getValue().renderText(CLIENT.font, xOffset, yOffset + 1, graphics.pose().last().pose(), graphics.bufferSource());
+                    renderText(graphics, entry.getValue(), xOffset, yOffset + 1);
                     xOffset += entry.getValue().getWidth(CLIENT.font) + 2;
                 }
             } else if (info instanceof TooltipInfo.BlockInfo infoLine) {
                 int offset = tooltipList.size() == 1 ? yOffset + (rectH / 2) - (CLIENT.font.lineHeight / 2) : yOffset;
-                infoLine.TOOLTIP.renderText(CLIENT.font, rectX + 18, offset, graphics.pose().last().pose(), graphics.bufferSource());
+                renderText(graphics, infoLine.TOOLTIP, rectX + 18, offset);
             }
             yOffset += info.getHeight();
         }
+        graphics.pose().popPose();
+    }
+
+    public static void renderText(GuiGraphics graphics, ClientTooltipComponent tooltip, int x, int y) {
+        graphics.pose().translate(0, 0, 400);
+        graphics.pose().pushPose();
+        tooltip.renderText(CLIENT.font, x, y, graphics.pose().last().pose(), graphics.bufferSource());
         graphics.pose().popPose();
     }
 

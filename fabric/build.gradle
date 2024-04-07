@@ -4,6 +4,7 @@ plugins {
     id 'maven-publish'
     id 'fabric-loom'
 }
+
 base {
     archivesName = "${mod_id}-fabric-${minecraft_version}"
 }
@@ -12,6 +13,14 @@ repositories {
     maven {
         name = "Fuzs Mod Resources"
         url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/"
+    }
+    maven {
+        name = 'TerraformersMC'
+        url = 'https://maven.terraformersmc.com/'
+    }
+    maven { // Trinkets
+        name = "Ladysnake Libs"
+        url = 'https://maven.ladysnake.org/releases'
     }
 }
 
@@ -22,8 +31,8 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
     implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
     implementation project(":common")
-    include(implementation(annotationProcessor("io.github.llamalad7:mixinextras-fabric:0.2.1")))
     modImplementation "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:8.0.0"
+    modImplementation "dev.emi:trinkets:${trinkets_version}"
 }
 
 loom {

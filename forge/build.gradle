@@ -4,12 +4,19 @@ plugins {
     id 'net.neoforged.gradle' version '[6.0.18,6.2)'
     id 'org.spongepowered.mixin'
 }
+
 base {
     archivesName = "${mod_id}-forge-${minecraft_version}"
 }
+
+repositories {
+    maven {
+        url = "https://maven.theillusivec4.top/"
+    }
+}
+
 mixin {
     add(sourceSets.main, "${mod_id}.refmap.json")
-
     config("${mod_id}.mixins.json")
     config("${mod_id}.forge.mixins.json")
 }
@@ -78,6 +85,12 @@ dependencies {
     minecraft "net.neoforged:forge:${minecraft_version}-${forge_version}"
     compileOnly project(":common")
     annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
+    implementation(jarJar("io.github.llamalad7:mixinextras-neoforge:0.3.5")) {
+        jarJar.ranged(it, "[0.3.5,)")
+    }
+    annotationProcessor("io.github.llamalad7:mixinextras-neoforge:0.3.5")
+    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
 }
 
 tasks.withType(JavaCompile).configureEach {

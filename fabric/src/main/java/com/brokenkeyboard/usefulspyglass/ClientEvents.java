@@ -9,11 +9,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SpyglassItem;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.HitResult;
 
 import static com.brokenkeyboard.usefulspyglass.InfoOverlay.*;
 
@@ -33,13 +31,11 @@ public final class ClientEvents implements ClientModInitializer {
     private static void onClientTick(Minecraft client) {
         Player player = client.player;
         if (player != null && player.isScoping()) {
-            HitResult result = EntityFinder.getAimedObject(client, 100);
-            InfoOverlay.setHitResult(result);
+            InfoOverlay.setHitResult(EntityFinder.getAimedObject(client, 100));
             ItemStack stack = player.getItemInHand(player.getUsedItemHand());
-            if (stack.getItem() instanceof SpyglassItem && EnchantmentHelper.getEnchantments(stack).containsKey(UsefulSpyglass.MARKING)) {
-                if (hitResult instanceof EntityHitResult entity && entity.getEntity() instanceof LivingEntity living && !living.isCurrentlyGlowing()) {
-                    ClientPlayNetworking.send(new MarkEntityPacket(living.getId(), living.level().dimension().location()));
-                }
+            if (EnchantmentHelper.getItemEnchantmentLevel(ModRegistry.MARKING, stack) > 0 && hitResult instanceof EntityHitResult entity &&
+                    entity.getEntity() instanceof LivingEntity living && !player.getCooldowns().isOnCooldown(stack.getItem()) && client.options.keyAttack.isDown()) {
+                ClientPlayNetworking.send(new MarkEntityPacket(living.getId(), living.level().dimension().location()));
             }
         } else {
             InfoOverlay.setHitResult(null);

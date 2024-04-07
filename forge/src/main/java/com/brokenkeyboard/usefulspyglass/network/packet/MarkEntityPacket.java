@@ -1,6 +1,7 @@
 package com.brokenkeyboard.usefulspyglass.network.packet;
 
-import com.brokenkeyboard.usefulspyglass.UsefulSpyglass;
+import com.brokenkeyboard.usefulspyglass.CommonConfig;
+import com.brokenkeyboard.usefulspyglass.ModRegistry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
@@ -10,6 +11,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -44,8 +46,9 @@ public class MarkEntityPacket {
                 if(entity != null) {
                     if (entity.level().dimension().equals(ResourceKey.create(Registries.DIMENSION, packet.dimension))) {
                         ItemStack stack = player.getItemInHand(player.getUsedItemHand());
-                        int level = EnchantmentHelper.getTagEnchantmentLevel(UsefulSpyglass.MARKING.get(), stack);
-                        entity.addEffect(new MobEffectInstance(new MobEffectInstance(MobEffects.GLOWING, 80 + (40 * (level - 1)), 0)));
+                        int level = EnchantmentHelper.getTagEnchantmentLevel(ModRegistry.MARKING, stack);
+                        entity.addEffect(new MobEffectInstance(new MobEffectInstance(MobEffects.GLOWING, CommonConfig.MARKING_DURATION.get())));
+                        player.getCooldowns().addCooldown(Items.SPYGLASS, (int) (CommonConfig.MARKING_DURATION.get() * 1.5));
                     }
                 }
             }
