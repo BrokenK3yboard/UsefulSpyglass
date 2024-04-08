@@ -14,5 +14,6 @@ public class Constants {
 	public static final String MOD_NAME = "Useful Spyglass";
 	public static final Logger LOG = LoggerFactory.getLogger(MOD_NAME);
 
-	public static final Predicate<ItemStack> PRECISION_SPYGLASS = stack -> stack.getItem() == Items.SPYGLASS && EnchantmentHelper.getEnchantments(stack).containsKey(ModRegistry.PRECISION);
+	public static final Predicate<ItemStack> MARKING = stack -> stack.getItem() == Items.SPYGLASS && EnchantmentHelper.getEnchantments(stack).containsKey(ModRegistry.MARKING);
+	public static final Predicate<ItemStack> PRECISION = stack -> stack.getItem() == Items.SPYGLASS && EnchantmentHelper.getEnchantments(stack).containsKey(ModRegistry.PRECISION);
 }

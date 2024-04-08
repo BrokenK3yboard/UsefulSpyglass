@@ -1,9 +1,7 @@
 package com.brokenkeyboard.usefulspyglass.network;
 
 import com.brokenkeyboard.usefulspyglass.Constants;
-import com.brokenkeyboard.usefulspyglass.network.packet.MarkEntityPacket;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
@@ -34,7 +32,7 @@ public class PacketHandler {
                 .add();
     }
 
-    public static void sendPacket(LivingEntity entity, ResourceLocation level) {
-        instance.sendToServer(new MarkEntityPacket(entity.getId(), level));
+    public static void sendMarkingPacket(int entityID, ResourceLocation level) {
+        instance.sendToServer(new MarkEntityPacket(entityID, level));
     }
 }

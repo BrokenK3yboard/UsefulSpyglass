@@ -1,17 +1,14 @@
 package com.brokenkeyboard.usefulspyglass;
 
+import com.brokenkeyboard.usefulspyglass.config.ClientConfig;
+import com.brokenkeyboard.usefulspyglass.config.CommonConfig;
+import com.brokenkeyboard.usefulspyglass.handler.ClientHandler;
 import com.brokenkeyboard.usefulspyglass.network.PacketHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SpyglassItem;
-import net.minecraft.world.item.enchantment.EnchantmentCategory;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraftforge.api.distmarker.Dist;
@@ -33,8 +30,6 @@ import static com.brokenkeyboard.usefulspyglass.InfoOverlay.*;
 
 @Mod(Constants.MOD_ID)
 public class UsefulSpyglass {
-
-    public static final EnchantmentCategory SPYGLASS = EnchantmentCategory.create("spyglass", item -> item instanceof SpyglassItem);
 
     public UsefulSpyglass() {
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ClientConfig.SPEC);
@@ -70,18 +65,8 @@ public class UsefulSpyglass {
 
         @SubscribeEvent
         public static void onClientTick(TickEvent.ClientTickEvent event) {
-            Minecraft client = Minecraft.getInstance();
-            Player player = client.player;
-            if (event.phase == TickEvent.Phase.END && player != null && player.isScoping()) {
-                InfoOverlay.setHitResult(EntityFinder.getAimedObject(client, 100));
-                ItemStack stack = player.getItemInHand(player.getUsedItemHand());
-                if (EnchantmentHelper.getTagEnchantmentLevel(ModRegistry.MARKING, stack) > 0 && hitResult instanceof EntityHitResult entityHit &&
-                        entityHit.getEntity() instanceof LivingEntity entity && !player.getCooldowns().isOnCooldown(stack.getItem()) && client.options.keyAttack.isDown()) {
-                    PacketHandler.sendPacket(entity, entity.level().dimension().location());
-                }
-            } else {
-                InfoOverlay.setHitResult(null);
-            }
+            if (event.phase != TickEvent.Phase.END) return;
+            ClientHandler.handleClientTick(Minecraft.getInstance());
         }
     }
 

@@ -1,5 +1,6 @@
 package com.brokenkeyboard.usefulspyglass;
 
+import com.brokenkeyboard.usefulspyglass.config.ClientConfig;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;

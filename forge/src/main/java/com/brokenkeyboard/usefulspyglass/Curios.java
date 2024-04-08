@@ -1,17 +1,17 @@
 package com.brokenkeyboard.usefulspyglass;
 
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
 
 import java.util.Optional;
-
-import static com.brokenkeyboard.usefulspyglass.Constants.PRECISION_SPYGLASS;
+import java.util.function.Predicate;
 
 public class Curios {
 
-    public static boolean checkCurios(Player player) {
+    public static boolean checkCurios(Player player, Predicate<ItemStack> predicate) {
         Optional<ICuriosItemHandler> handler = CuriosApi.getCuriosInventory(player).resolve();
-        return handler.isPresent() && handler.get().findFirstCurio(PRECISION_SPYGLASS).isPresent();
+        return handler.isPresent() && handler.get().findFirstCurio(predicate).isPresent();
     }
 }

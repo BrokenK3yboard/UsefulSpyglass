@@ -1,4 +1,4 @@
-package com.brokenkeyboard.usefulspyglass;
+package com.brokenkeyboard.usefulspyglass.config;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 

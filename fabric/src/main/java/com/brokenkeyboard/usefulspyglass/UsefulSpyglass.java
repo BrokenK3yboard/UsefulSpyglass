@@ -1,5 +1,8 @@
 package com.brokenkeyboard.usefulspyglass;
 
+import com.brokenkeyboard.usefulspyglass.config.ClientConfig;
+import com.brokenkeyboard.usefulspyglass.config.CommonConfig;
+import com.brokenkeyboard.usefulspyglass.handler.ServerHandler;
 import com.brokenkeyboard.usefulspyglass.network.packet.MarkEntityPacket;
 import fuzs.forgeconfigapiport.api.config.v2.ForgeConfigRegistry;
 import net.fabricmc.api.ModInitializer;
@@ -18,10 +21,15 @@ public class UsefulSpyglass implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        ModRegistry.registerEnchantment(bind(BuiltInRegistries.ENCHANTMENT));
-        ServerPlayNetworking.registerGlobalReceiver(MARKING_TYPE.getId(), MarkEntityPacket::receive);
         ForgeConfigRegistry.INSTANCE.register(Constants.MOD_ID, ModConfig.Type.CLIENT, ClientConfig.SPEC);
         ForgeConfigRegistry.INSTANCE.register(Constants.MOD_ID, ModConfig.Type.COMMON, CommonConfig.SPEC);
+        ModRegistry.registerEnchantment(bind(BuiltInRegistries.ENCHANTMENT));
+
+        ServerPlayNetworking.registerGlobalReceiver(MARKING_TYPE.getId(), (server, player, handler, buf, responseSender) -> {
+            int entityID = buf.readInt();
+            ResourceLocation dimension = buf.readResourceLocation();
+            ServerHandler.markEntity(player, entityID, dimension);
+        });
     }
 
     private static <T> BiConsumer<ResourceLocation, T> bind(Registry<? super T> registry) {
