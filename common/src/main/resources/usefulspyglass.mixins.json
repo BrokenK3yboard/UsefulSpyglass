@@ -3,11 +3,19 @@
   "minVersion": "0.8",
   "package": "com.brokenkeyboard.usefulspyglass.mixin",
   "refmap": "${mod_id}.refmap.json",
-  "compatibilityLevel": "JAVA_17",
+  "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "EntityAccessor",
+    "EyeOfEnderAccessor",
+    "EyeOfEnderMixin",
     "ItemMixin",
+    "LivingEntityMixin",
     "PlayerMixin",
-    "SPGameModeMixin"
+    "ProjectileWeaponItemMixin",
+    "ServerEntityMixin",
+    "ServerPlayerMixin",
+    "SPGameModeMixin",
+    "TrackedEntityMixin"
   ],
   "client": [
     "AbstractClientPlayerMixin"

@@ -2,10 +2,13 @@ package com.brokenkeyboard.usefulspyglass;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.Map;
 
 public abstract class TooltipInfo {
+
+    public static final ResourceLocation CONTAINER = ResourceLocation.withDefaultNamespace("hud/heart/container");
     abstract int getWidth();
     abstract int getHeight();
 
@@ -68,18 +71,15 @@ public abstract class TooltipInfo {
     }
 
     public enum Icon {
-        HEALTH_EMPTY(16, 0, 9, 9),
-        HEALTH(52, 0, 9, 9),
-        ARMOR(43, 9, 9, 9);
+        HEALTH(ResourceLocation.withDefaultNamespace("hud/heart/full"), 9, 9),
+        ARMOR(ResourceLocation.withDefaultNamespace("hud/armor_full"),9, 9);
 
-        public final int ICON_X;
-        public final int ICON_Y;
+        public final ResourceLocation LOCATION;
         public final int ICON_WIDTH;
         public final int ICON_HEIGHT;
 
-        Icon(int iconX, int iconY, int iconWidth, int iconHeight) {
-            this.ICON_X = iconX;
-            this.ICON_Y = iconY;
+        Icon(ResourceLocation location, int iconWidth, int iconHeight) {
+            this.LOCATION = location;
             this.ICON_WIDTH = iconWidth;
             this.ICON_HEIGHT = iconHeight;
         }

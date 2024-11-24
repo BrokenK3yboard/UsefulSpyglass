@@ -1,38 +1,35 @@
 package com.brokenkeyboard.usefulspyglass;
 
-import com.brokenkeyboard.usefulspyglass.config.ClientConfig;
 import com.brokenkeyboard.usefulspyglass.config.CommonConfig;
-import com.brokenkeyboard.usefulspyglass.handler.ServerHandler;
-import com.brokenkeyboard.usefulspyglass.network.packet.MarkEntityPacket;
-import fuzs.forgeconfigapiport.api.config.v2.ForgeConfigRegistry;
+import com.brokenkeyboard.usefulspyglass.network.ServerHandler;
+import com.brokenkeyboard.usefulspyglass.network.SpyglassEnchPayload;
+import com.mojang.serialization.Codec;
+import fuzs.forgeconfigapiport.fabric.api.neoforge.v4.NeoForgeConfigRegistry;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.networking.v1.PacketType;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.fml.config.ModConfig;
+import net.neoforged.fml.config.ModConfig;
 
-import java.util.function.BiConsumer;
-
+@SuppressWarnings("UnstableApiUsage")
 public class UsefulSpyglass implements ModInitializer {
 
-    public static final PacketType<MarkEntityPacket> MARKING_TYPE = PacketType.create(new ResourceLocation(Constants.MOD_ID, "marking"), MarkEntityPacket::new);
+    public static final AttachmentType<Double> PRECISION_BONUS = AttachmentRegistry.createPersistent(ResourceLocation.fromNamespaceAndPath(ModRegistry.MOD_ID, "precision_bonus"), Codec.DOUBLE);
 
     @Override
     public void onInitialize() {
-        ForgeConfigRegistry.INSTANCE.register(Constants.MOD_ID, ModConfig.Type.CLIENT, ClientConfig.SPEC);
-        ForgeConfigRegistry.INSTANCE.register(Constants.MOD_ID, ModConfig.Type.COMMON, CommonConfig.SPEC);
-        ModRegistry.registerEnchantment(bind(BuiltInRegistries.ENCHANTMENT));
 
-        ServerPlayNetworking.registerGlobalReceiver(MARKING_TYPE.getId(), (server, player, handler, buf, responseSender) -> {
-            int entityID = buf.readInt();
-            ResourceLocation dimension = buf.readResourceLocation();
-            ServerHandler.markEntity(player, entityID, dimension);
-        });
-    }
+        NeoForgeConfigRegistry.INSTANCE.register(ModRegistry.MOD_ID, ModConfig.Type.COMMON, CommonConfig.SPEC);
 
-    private static <T> BiConsumer<ResourceLocation, T> bind(Registry<? super T> registry) {
-        return (location, t) -> Registry.register(registry, location, t);
+        Registry.register(BuiltInRegistries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(ModRegistry.MOD_ID, "watcher_eye"), ModRegistry.SPOTTER_EYE);
+
+        PayloadTypeRegistry.playC2S().register(SpyglassEnchPayload.TYPE, SpyglassEnchPayload.STREAM_CODEC);
+
+        ServerPlayNetworking.registerGlobalReceiver(SpyglassEnchPayload.TYPE, (payload, context) -> context.server().execute(() ->
+                ServerHandler.handleEnchantments(context.player())));
     }
 }

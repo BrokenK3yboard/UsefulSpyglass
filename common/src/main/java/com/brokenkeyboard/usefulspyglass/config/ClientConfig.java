@@ -1,22 +1,22 @@
 package com.brokenkeyboard.usefulspyglass.config;
 
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class ClientConfig {
 
-    public static final ForgeConfigSpec SPEC;
-    public static ForgeConfigSpec.BooleanValue DISPLAY_ENTITIES;
-    public static ForgeConfigSpec.BooleanValue DISPLAY_BLOCKS;
-    public static ForgeConfigSpec.DoubleValue HUD_X;
-    public static ForgeConfigSpec.DoubleValue HUD_Y;
+    public static final ModConfigSpec SPEC;
+    public static ModConfigSpec.BooleanValue DISPLAY_ENTITIES;
+    public static ModConfigSpec.BooleanValue DISPLAY_BLOCKS;
+    public static ModConfigSpec.DoubleValue HUD_X;
+    public static ModConfigSpec.DoubleValue HUD_Y;
 
     static {
-        ForgeConfigSpec.Builder configBuilder = new ForgeConfigSpec.Builder();
+        ModConfigSpec.Builder configBuilder = new ModConfigSpec.Builder();
         registerConfig(configBuilder);
         SPEC = configBuilder.build();
     }
 
-    public static void registerConfig(ForgeConfigSpec.Builder builder) {
+    public static void registerConfig(ModConfigSpec.Builder builder) {
 
         DISPLAY_ENTITIES = builder
                 .comment("If enabled, information on entities will be displayed.")

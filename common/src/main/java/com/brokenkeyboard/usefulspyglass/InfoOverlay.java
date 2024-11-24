@@ -64,7 +64,7 @@ public class InfoOverlay {
 
         ArrayList<TooltipInfo> tooltipList = new ArrayList<>();
 
-        if(hitResult instanceof EntityHitResult entityHit && entityHit.getEntity() instanceof LivingEntity entity) {
+        if(hitResult instanceof EntityHitResult entityHit && entityHit.getEntity() instanceof LivingEntity entity && entity.getDisplayName() != null) {
             Component name = Component.literal(entity.getDisplayName().getString()).withStyle(getColor(entity));
             tooltipList.add(new TooltipInfo.TextTooltip(ClientTooltipComponent.create(name.getVisualOrderText())));
 
@@ -90,9 +90,11 @@ public class InfoOverlay {
                         tooltipList.add(new TooltipInfo.BlockInfo(ClientTooltipComponent.create(Component.literal(str.toString()).getVisualOrderText())));
                         str = new StringBuilder();
                     }
+
                     if(!str.isEmpty()) {
                         str.append(" ");
                     }
+
                     str.append(addStr);
                 }
                 tooltipList.add(new TooltipInfo.BlockInfo(ClientTooltipComponent.create(Component.literal(str.toString()).getVisualOrderText())));

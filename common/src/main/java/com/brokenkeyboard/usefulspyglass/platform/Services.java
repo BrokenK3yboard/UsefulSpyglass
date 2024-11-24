@@ -1,6 +1,6 @@
 package com.brokenkeyboard.usefulspyglass.platform;
 
-import com.brokenkeyboard.usefulspyglass.Constants;
+import com.brokenkeyboard.usefulspyglass.ModRegistry;
 
 import java.util.ServiceLoader;
 
@@ -23,7 +23,7 @@ public class Services {
         final T loadedService = ServiceLoader.load(clazz)
                 .findFirst()
                 .orElseThrow(() -> new NullPointerException("Failed to load service for " + clazz.getName()));
-        Constants.LOG.debug("Loaded {} for service {}", loadedService, clazz);
+        ModRegistry.LOG.debug("Loaded {} for service {}", loadedService, clazz);
         return loadedService;
     }
 }

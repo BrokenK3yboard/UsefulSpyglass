@@ -18,7 +18,6 @@ import java.util.Map;
 public class DrawOverlay {
 
     private static final Minecraft CLIENT = Minecraft.getInstance();
-    private static final ResourceLocation GUI_ICONS_LOCATION = new ResourceLocation("textures/gui/icons.png");
 
     @SuppressWarnings("deprecation")
     public static void drawGUI(GuiGraphics graphics, HitResult result, List<TooltipInfo> tooltipList, int rectX, int rectY, int rectW, int rectH) {
@@ -37,11 +36,12 @@ public class DrawOverlay {
                 renderText(graphics, infoLine.TOOLTIP, rectX, yOffset);
             } else if (info instanceof TooltipInfo.MobInfo infoLine) {
                 int xOffset = rectX;
+
                 for (Map.Entry<TooltipInfo.Icon, ClientTooltipComponent> entry : infoLine.MOB_INFO.entrySet()) {
                     if (entry.getKey() == TooltipInfo.Icon.HEALTH) {
-                        renderIcon(graphics, xOffset, yOffset, TooltipInfo.Icon.HEALTH_EMPTY.ICON_X, TooltipInfo.Icon.HEALTH_EMPTY.ICON_Y);
+                        renderIcon(graphics, TooltipInfo.CONTAINER, xOffset, yOffset);
                     }
-                    renderIcon(graphics, xOffset, yOffset, entry.getKey().ICON_X, entry.getKey().ICON_Y);
+                    renderIcon(graphics, entry.getKey().LOCATION, xOffset, yOffset);
                     xOffset += entry.getKey().ICON_WIDTH + 2;
                     renderText(graphics, entry.getValue(), xOffset, yOffset + 1);
                     xOffset += entry.getValue().getWidth(CLIENT.font) + 2;
@@ -55,17 +55,17 @@ public class DrawOverlay {
         graphics.pose().popPose();
     }
 
-    public static void renderText(GuiGraphics graphics, ClientTooltipComponent tooltip, int x, int y) {
+    private static void renderText(GuiGraphics graphics, ClientTooltipComponent tooltip, int x, int y) {
         graphics.pose().translate(0, 0, 400);
         graphics.pose().pushPose();
         tooltip.renderText(CLIENT.font, x, y, graphics.pose().last().pose(), graphics.bufferSource());
         graphics.pose().popPose();
     }
 
-    public static void renderIcon(GuiGraphics graphics, int x, int y, int iconX, int iconY) {
+    private static void renderIcon(GuiGraphics graphics, ResourceLocation location, int x, int y) {
         graphics.pose().translate(0, 0, 400);
         graphics.pose().pushPose();
-        graphics.blit(GUI_ICONS_LOCATION, x, y, iconX, iconY, 9, 9);
+        graphics.blitSprite(location, x, y, 9, 9);
         graphics.pose().popPose();
     }
 

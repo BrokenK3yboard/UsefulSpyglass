@@ -1,13 +1,13 @@
 package com.brokenkeyboard.usefulspyglass.mixin;
 
-import com.brokenkeyboard.usefulspyglass.handler.ServerHandler;
+import com.brokenkeyboard.usefulspyglass.network.ServerHandler;
 import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(value = Player.class, priority = 900)
+@Mixin(value = Player.class)
 public class PlayerMixin {
 
     @Inject(method = "isScoping", at = @At(value = "RETURN"), cancellable = true)

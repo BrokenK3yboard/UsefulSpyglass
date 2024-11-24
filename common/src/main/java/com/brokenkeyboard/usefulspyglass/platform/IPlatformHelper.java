@@ -1,12 +1,15 @@
 package com.brokenkeyboard.usefulspyglass.platform;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.item.enchantment.Enchantment;
 
 public interface IPlatformHelper {
-    EnchantmentCategory getSpyglassEnchCategory();
-    boolean hasMarkingSpyglass(Player player);
-    boolean hasPrecisionSpyglass(Player player);
-    void sendMarkingPacket(int entityID, ResourceLocation dimension);
+    boolean hasSpyglass(Player player, ResourceKey<Enchantment> enchant);
+    boolean hasPrecision(Player player);
+    boolean testPrecisionCompat(Player player);
+    void useSpyglassEnch();
+    void setPrecisionBonus(Projectile projectile);
+    double getPrecisionBonus(Projectile projectile);
 }
