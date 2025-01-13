@@ -2,7 +2,8 @@ package com.brokenkeyboard.usefulspyglass.handler;
 
 import com.brokenkeyboard.usefulspyglass.config.CommonConfig;
 import com.brokenkeyboard.usefulspyglass.platform.Services;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Registry;
+import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -23,9 +24,9 @@ public class ServerHandler {
 
     public static void markEntity(ServerPlayer player, int entityID, ResourceLocation dimension) {
         if (player == null) return;
-        LivingEntity entity = (LivingEntity) player.level().getEntity(entityID);
-        ResourceKey<Level> levelKey = ResourceKey.create(Registries.DIMENSION, dimension);
-        if (entity != null && entity.level().dimension().equals(levelKey) && !player.getCooldowns().isOnCooldown(Items.SPYGLASS) && Services.PLATFORM.hasMarkingSpyglass(player)) {
+        LivingEntity entity = (LivingEntity) player.level.getEntity(entityID);
+        ResourceKey<Level> levelKey = ResourceKey.create(Registry.DIMENSION_REGISTRY, dimension);
+        if (entity != null && entity.level.dimension().equals(levelKey) && !player.getCooldowns().isOnCooldown(Items.SPYGLASS) && Services.PLATFORM.hasMarkingSpyglass(player)) {
             entity.addEffect(new MobEffectInstance(new MobEffectInstance(MobEffects.GLOWING, CommonConfig.MARKING_DURATION.get())));
             player.getCooldowns().addCooldown(Items.SPYGLASS, (int) (CommonConfig.MARKING_DURATION.get() * 1.5));
         }

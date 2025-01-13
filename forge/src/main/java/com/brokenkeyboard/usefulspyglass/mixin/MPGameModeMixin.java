@@ -1,5 +1,6 @@
 package com.brokenkeyboard.usefulspyglass.mixin;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
 import net.minecraft.network.protocol.game.ServerboundUseItemPacket;
@@ -21,8 +22,8 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 public class MPGameModeMixin {
 
     @Inject(method = {"lambda$useItem$5", "m_233716_"}, at = @At(value = "INVOKE", target = "Lorg/apache/commons/lang3/mutable/MutableObject;setValue(Ljava/lang/Object;)V",
-            shift = At.Shift.AFTER, ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD)
-    private void allowSpyglassUse(InteractionHand hand, Player player, MutableObject<InteractionResult> object, int value, CallbackInfoReturnable<ServerboundUseItemPacket> cir, ServerboundUseItemPacket packet, ItemStack stack) {
+            shift = At.Shift.AFTER, ordinal = 0))
+    private void allowSpyglassUse(InteractionHand hand, Player player, MutableObject<InteractionResult> object, int value, CallbackInfoReturnable<ServerboundUseItemPacket> cir, @Local ItemStack stack) {
         if (stack.getItem() instanceof SpyglassItem && Minecraft.getInstance().level != null) {
             InteractionResultHolder<ItemStack> result = stack.use(Minecraft.getInstance().level, player, hand);
             ItemStack stack1 = result.getObject();

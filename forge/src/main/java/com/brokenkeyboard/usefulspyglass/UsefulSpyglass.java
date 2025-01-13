@@ -6,7 +6,6 @@ import com.brokenkeyboard.usefulspyglass.handler.ClientHandler;
 import com.brokenkeyboard.usefulspyglass.network.PacketHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Registry;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.BlockHitResult;
@@ -21,6 +20,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegisterEvent;
 
 import java.util.function.BiConsumer;
@@ -34,7 +34,7 @@ public class UsefulSpyglass {
     public UsefulSpyglass() {
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ClientConfig.SPEC);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, CommonConfig.SPEC);
-        register(Registries.ENCHANTMENT, ModRegistry::registerEnchantment);
+        register(ForgeRegistries.ENCHANTMENTS.getRegistryKey(), ModRegistry::registerEnchantment);
     }
 
     @Mod.EventBusSubscriber(modid = Constants.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)

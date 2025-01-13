@@ -78,7 +78,7 @@ public class InfoOverlay {
             tooltipList.add(new TooltipInfo.MobInfo(map));
             setComponent(tooltipList);
         } else if (hitResult instanceof BlockHitResult blockHit && CLIENT.player != null) {
-            BlockState state = CLIENT.player.level().getBlockState(blockHit.getBlockPos());
+            BlockState state = CLIENT.player.getLevel().getBlockState(blockHit.getBlockPos());
             String displayStr = state.getBlock().getName().getString();
             String[] arr = displayStr.split(" +");
 

@@ -19,7 +19,7 @@ public class ClientHandler {
             InfoOverlay.setHitResult(EntityFinder.getAimedObject(client, 100));
             if (!player.getCooldowns().isOnCooldown(Items.SPYGLASS) && Services.PLATFORM.hasMarkingSpyglass(player) && hitResult instanceof EntityHitResult entityHit &&
                     entityHit.getEntity() instanceof LivingEntity entity && client.options.keyAttack.isDown()) {
-                Services.PLATFORM.sendMarkingPacket(entity.getId(), entity.level().dimension().location());
+                Services.PLATFORM.sendMarkingPacket(entity.getId(), entity.getLevel().dimension().location());
             }
         } else {
             InfoOverlay.setHitResult(null);
