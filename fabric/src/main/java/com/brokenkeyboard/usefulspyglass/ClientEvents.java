@@ -23,7 +23,7 @@ public final class ClientEvents implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(ClientHandler::handleClientTick);
         HudRenderCallback.EVENT.register((graphics, tickDelta) -> {
             if (hitResult != null && ((hitResult instanceof EntityHitResult && ClientConfig.DISPLAY_ENTITIES.get()) || (hitResult instanceof BlockHitResult && ClientConfig.DISPLAY_BLOCKS.get()))) {
-                DrawOverlay.drawGUI(new PoseStack(), hitResult, tooltipList, rectangleX, rectangleY, rectangleWidth, rectangleHeight);
+                DrawOverlay.drawGUI(graphics, hitResult, tooltipList, rectangleX, rectangleY, rectangleWidth, rectangleHeight);
             }
         });
     }

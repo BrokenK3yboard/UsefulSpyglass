@@ -3,7 +3,6 @@ package com.brokenkeyboard.usefulspyglass.handler;
 import com.brokenkeyboard.usefulspyglass.config.CommonConfig;
 import com.brokenkeyboard.usefulspyglass.platform.Services;
 import net.minecraft.core.Registry;
-import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;

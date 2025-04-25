@@ -5,7 +5,7 @@
     "name": "Useful Spyglass",
     "description": "This mod allows players to view information on mobs when viewing them through a spyglass. Also adds spyglass enchantments.",
     "authors": [
-        "BrokenKeyboard"
+        "BrokenKeyboard, cassiancc"
     ],
     "contact": {
         "homepage": "https://modrinth.com/mod/useful-spyglass",
@@ -29,6 +29,7 @@
         "fabricloader": ">=0.15",
         "fabric": "*",
         "minecraft": "1.19.2",
-        "java": ">=17"
+        "java": ">=17",
+        "forgeconfigapiport": ">=4.2.11"
     }
 }

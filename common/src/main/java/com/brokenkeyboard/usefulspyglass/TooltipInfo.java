@@ -1,5 +1,6 @@
 package com.brokenkeyboard.usefulspyglass;
 
+import com.brokenkeyboard.usefulspyglass.platform.Services;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 
@@ -58,7 +59,7 @@ public abstract class TooltipInfo {
 
         @Override
         int getWidth() {
-            return 18 + TOOLTIP.getWidth(Minecraft.getInstance().font);
+            return TOOLTIP.getWidth(Minecraft.getInstance().font) + (Services.PLATFORM.shouldRenderBlock() ? 18 : 1);
         }
 
         @Override

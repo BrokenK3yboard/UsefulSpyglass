@@ -18,6 +18,11 @@ import static com.brokenkeyboard.usefulspyglass.Constants.PRECISION;
 public class ForgePlatformHelper implements IPlatformHelper {
 
     @Override
+    public boolean shouldRenderBlock() {
+        return true;
+    }
+
+    @Override
     public EnchantmentCategory getSpyglassEnchCategory() {
         return EnchantmentCategory.create("spyglass", item -> item instanceof SpyglassItem);
     }

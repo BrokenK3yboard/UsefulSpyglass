@@ -1,6 +1,6 @@
 package com.brokenkeyboard.usefulspyglass;
 
-import com.mojang.blaze3d.platform.Lighting;
+import com.brokenkeyboard.usefulspyglass.platform.Services;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Matrix4f;
@@ -20,6 +20,7 @@ import java.util.Map;
 public class DrawOverlay extends GuiComponent {
 
     private static final Minecraft CLIENT = Minecraft.getInstance();
+    private static final boolean RENDER_BLOCK = Services.PLATFORM.shouldRenderBlock();
 
     public static void fillGradient(Matrix4f matrix, BufferBuilder buf, int x, int y, int w, int h, int start, int end) {
         fillGradient(matrix, buf, x, y, w, h, 400, start, end);
@@ -29,13 +30,16 @@ public class DrawOverlay extends GuiComponent {
         poseStack.pushPose();
         Matrix4f matrix4f = poseStack.last().pose();
 
-        drawRect(matrix4f, rectangleX, rectangleY, rectangleWidth, rectangleHeight);
+        drawRect(poseStack, rectangleX, rectangleY, rectangleWidth, rectangleHeight);
+        poseStack.translate(0, 0, 400);
         int yOffset = rectangleY;
 
-        if (result instanceof BlockHitResult blockHit && CLIENT.player != null) {
+        if (RENDER_BLOCK && result instanceof BlockHitResult blockHit && CLIENT.player != null) {
             BlockState state = CLIENT.player.getLevel().getBlockState(blockHit.getBlockPos());
             ItemStack stack = state.getBlock().getCloneItemStack(CLIENT.player.getLevel(), blockHit.getBlockPos(), state);
-            renderStack(stack, null, rectangleX, rectangleY + rectangleHeight / 2 - 8);
+            poseStack.pushPose();
+            CLIENT.getItemRenderer().renderAndDecorateItem(stack, rectangleX, rectangleY + rectangleHeight / 2 - 8);
+            poseStack.popPose();
         }
 
         for (TooltipInfo info : tooltipList) {
@@ -45,20 +49,19 @@ public class DrawOverlay extends GuiComponent {
                 int xOffset = rectangleX;
                 for (Map.Entry<TooltipInfo.Icon, ClientTooltipComponent> entry : infoLine.MOB_INFO.entrySet()) {
                     if (entry.getKey() == TooltipInfo.Icon.HEALTH) {
-                        renderIcon(rectangleX, yOffset, TooltipInfo.Icon.HEALTH_EMPTY.ICON_X, TooltipInfo.Icon.HEALTH_EMPTY.ICON_Y, 8,8, TooltipInfo.Icon.HEALTH.ICON_WIDTH, TooltipInfo.Icon.HEALTH.ICON_HEIGHT);
+                        renderIcon(xOffset, yOffset, TooltipInfo.Icon.HEALTH_EMPTY.ICON_X, TooltipInfo.Icon.HEALTH_EMPTY.ICON_Y, 8,8, TooltipInfo.Icon.HEALTH.ICON_WIDTH, TooltipInfo.Icon.HEALTH.ICON_HEIGHT);
                     }
-                    renderIcon(rectangleX, yOffset, entry.getKey().ICON_X, entry.getKey().ICON_Y, 8, 8, entry.getKey().ICON_WIDTH, entry.getKey().ICON_HEIGHT);
+                    renderIcon(xOffset, yOffset, entry.getKey().ICON_X, entry.getKey().ICON_Y, 8, 8, entry.getKey().ICON_WIDTH, entry.getKey().ICON_HEIGHT);
                     xOffset += entry.getKey().ICON_WIDTH + 2;
                     renderText(matrix4f, entry.getValue(), xOffset, yOffset + 1);
                     xOffset += entry.getValue().getWidth(CLIENT.font) + 2;
                 }
             } else if (info instanceof TooltipInfo.BlockInfo infoLine) {
                 int offset = tooltipList.size() == 1 ? yOffset + (rectangleHeight / 2) - (CLIENT.font.lineHeight / 2) : yOffset;
-                renderText(matrix4f, infoLine.TOOLTIP, rectangleX + 18, offset);
+                renderText(matrix4f, infoLine.TOOLTIP, rectangleX + (RENDER_BLOCK ? 18 : 1), offset);
             }
             yOffset += info.getHeight();
         }
-        poseStack.translate(0.0D, 0.0D, 400.0D);
         poseStack.popPose();
     }
 
@@ -90,24 +93,17 @@ public class DrawOverlay extends GuiComponent {
         tesselator.end();
     }
 
-    public static void renderStack(ItemStack stack, String countText, int x, int y) {
-        Lighting.setupFor3DItems();
-        RenderSystem.enableDepthTest();
-        CLIENT.getItemRenderer().renderGuiItem(stack, x, y);
-        CLIENT.getItemRenderer().renderGuiItemDecorations(CLIENT.font, stack, x, y, countText);
-        Lighting.setupForFlatItems();
-        RenderSystem.disableDepthTest();
-    }
-
-    public static void drawRect(Matrix4f matrix4f, int rectX, int rectY, int rectW, int rectH) {
+    public static void drawRect(PoseStack poseStack, int rectX, int rectY, int rectW, int rectH) {
         int rectGradient = -267386864;
         int borderGrad1 = 1347420415;
         int borderGrad2 = 1344798847;
 
+        poseStack.pushPose();
         Tesselator tesselator = Tesselator.getInstance();
         BufferBuilder buffer = tesselator.getBuilder();
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
         buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+        Matrix4f matrix4f = poseStack.last().pose();
 
         // Top, bottom, center, left, right
         DrawOverlay.fillGradient(matrix4f, buffer, rectX - 3, rectY - 4, rectX + rectW + 3, rectY - 3, rectGradient, rectGradient);
@@ -123,5 +119,6 @@ public class DrawOverlay extends GuiComponent {
         DrawOverlay.fillGradient(matrix4f, buffer, rectX - 3, rectY + rectH + 2, rectX + rectW + 3, rectY + rectH + 3, borderGrad2, borderGrad2);
         buffer.endVertex();
         tesselator.end();
+        poseStack.popPose();
     }
 }

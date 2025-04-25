@@ -17,6 +17,11 @@ import static com.brokenkeyboard.usefulspyglass.Constants.PRECISION;
 public class FabricPlatformHelper implements IPlatformHelper {
 
     @Override
+    public boolean shouldRenderBlock() {
+        return false;
+    }
+
+    @Override
     public EnchantmentCategory getSpyglassEnchCategory() {
         return EnchantmentCategory.BREAKABLE;
     }

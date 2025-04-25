@@ -6,7 +6,7 @@ license = "GPLv3"
 modId = "usefulspyglass"
 version = "0.6.1"
 displayName = "Useful Spyglass"
-credits = "BrokenKeyboard"
+credits = "BrokenKeyboard, cassiancc"
 authors = "BrokenKeyboard"
 description = '''This mod allows players to view information on mobs when viewing them through a spyglass. Also adds spyglass enchantments.'''
 
