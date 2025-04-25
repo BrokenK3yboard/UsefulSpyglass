@@ -1,0 +1,34 @@
+{
+    "schemaVersion": 1,
+    "id": "usefulspyglass",
+    "version": "${version}",
+    "name": "Useful Spyglass",
+    "description": "This mod allows players to view information on mobs when viewing them through a spyglass. Also adds spyglass enchantments.",
+    "authors": [
+        "BrokenKeyboard"
+    ],
+    "contact": {
+        "homepage": "https://modrinth.com/mod/useful-spyglass",
+        "sources": "https://github.com/BrokenK3yboard/UsefulSpyglass"
+    },
+    "license": "GPLv3",
+    "environment": "*",
+    "entrypoints": {
+        "main": [
+            "com.brokenkeyboard.usefulspyglass.UsefulSpyglass"
+        ],
+        "client": [
+            "com.brokenkeyboard.usefulspyglass.ClientEvents"
+        ]
+    },
+    "mixins": [
+        "usefulspyglass.mixins.json",
+        "usefulspyglass.fabric.mixins.json"
+    ],
+    "depends": {
+        "fabricloader": ">=0.15",
+        "fabric": "*",
+        "minecraft": "1.19.2",
+        "java": ">=17"
+    }
+}

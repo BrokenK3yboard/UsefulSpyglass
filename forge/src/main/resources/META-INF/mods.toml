@@ -1,0 +1,25 @@
+modLoader = "javafml"
+loaderVersion = "[43,)"
+license = "GPLv3"
+
+[[mods]] #mandatory
+modId = "usefulspyglass"
+version = "0.6.1"
+displayName = "Useful Spyglass"
+credits = "BrokenKeyboard"
+authors = "BrokenKeyboard"
+description = '''This mod allows players to view information on mobs when viewing them through a spyglass. Also adds spyglass enchantments.'''
+
+[[dependencies.usefulspyglass]] #optional
+modId = "forge" #mandatory
+mandatory = true #mandatory
+versionRange = "[43.1,)" #mandatory
+ordering = "NONE" # The order that this dependency should load in relation to your mod, required to be either 'BEFORE' or 'AFTER' if the dependency is not mandatory
+side = "BOTH" # Side this dependency is applied on - 'BOTH', 'CLIENT' or 'SERVER'
+
+[[dependencies.usefulspyglass]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.19, 1.20)"
+ordering = "NONE"
+side = "BOTH"
