@@ -5,6 +5,7 @@ import net.neoforged.neoforge.common.ModConfigSpec;
 public class ClientConfig {
 
     public static final ModConfigSpec SPEC;
+    public static ModConfigSpec.BooleanValue JADE_INTEGRATION;
     public static ModConfigSpec.BooleanValue DISPLAY_ENTITIES;
     public static ModConfigSpec.BooleanValue DISPLAY_BLOCKS;
     public static ModConfigSpec.DoubleValue HUD_X;
@@ -17,6 +18,10 @@ public class ClientConfig {
     }
 
     public static void registerConfig(ModConfigSpec.Builder builder) {
+
+        JADE_INTEGRATION = builder
+                .comment("If enabled and Jade is installed, will use its overlay instead of the built-in overlay.")
+                .define("Jade Overlay", true);
 
         DISPLAY_ENTITIES = builder
                 .comment("If enabled, information on entities will be displayed.")
