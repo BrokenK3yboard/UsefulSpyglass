@@ -6,7 +6,7 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.enchantment.Enchantment;
 
 public interface IPlatformHelper {
-    boolean hasSpyglass(Player player, ResourceKey<Enchantment> enchant);
+    boolean hasSpyglassEnchant(Player player, ResourceKey<Enchantment> enchant);
     boolean hasPrecision(Player player);
     boolean testPrecisionCompat(Player player);
     void useSpyglassEnch();

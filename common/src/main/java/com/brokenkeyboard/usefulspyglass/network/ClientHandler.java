@@ -17,7 +17,7 @@ public class ClientHandler {
             Entity cameraEntity = camera.getEntity();
             InfoOverlay.setHitResult(EntityFinder.getAimedObject(player.level(), cameraEntity, camera.getPosition(), cameraEntity.getViewVector(client.getFrameTimeNs())));
             if (!player.getCooldowns().isOnCooldown(Items.SPYGLASS) && client.options.keyAttack.isDown()
-                    && (Services.PLATFORM.hasSpyglass(player, ModRegistry.MARKING) || Services.PLATFORM.hasSpyglass(player, ModRegistry.SPOTTER))) {
+                    && (Services.PLATFORM.hasSpyglassEnchant(player, ModRegistry.MARKING) || Services.PLATFORM.hasSpyglassEnchant(player, ModRegistry.SPOTTER))) {
                     Services.PLATFORM.useSpyglassEnch();
             }
         } else {

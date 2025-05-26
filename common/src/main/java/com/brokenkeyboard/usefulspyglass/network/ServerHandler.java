@@ -36,10 +36,10 @@ public class ServerHandler {
         if (player.getCooldowns().isOnCooldown(Items.SPYGLASS)) return;
         HitResult result = EntityFinder.getAimedObject(player.level(), player, player.getEyePosition(1.0F), player.getViewVector(1.0F).normalize());
 
-        if (Services.PLATFORM.hasSpyglass(player, ModRegistry.MARKING) && result instanceof EntityHitResult entity) {
+        if (Services.PLATFORM.hasSpyglassEnchant(player, ModRegistry.MARKING) && result instanceof EntityHitResult entity) {
             ((MarkedEntitiesAccess) player).us$getMarkedEntities().addEntity(entity.getEntity(), CommonConfig.MARKING_DURATION.get());
             player.getCooldowns().addCooldown(Items.SPYGLASS, (int) (CommonConfig.MARKING_DURATION.get() * 0.8));
-        } else if (Services.PLATFORM.hasSpyglass(player, ModRegistry.SPOTTER)) {
+        } else if (Services.PLATFORM.hasSpyglassEnchant(player, ModRegistry.SPOTTER)) {
             SpotterEye eye = new SpotterEye(player.level(), player.getX(), player.getY(0.5), player.getZ(), player);
             eye.signalTo(new BlockPos((int) result.getLocation().x(), (int) result.getLocation().y() + 3, (int) result.getLocation().z()));
             player.level().gameEvent(GameEvent.PROJECTILE_SHOOT, eye.position(), GameEvent.Context.of(player));
