@@ -90,9 +90,11 @@ public class InfoOverlay {
                         tooltipList.add(new TooltipInfo.BlockInfo(ClientTooltipComponent.create(Component.literal(str.toString()).getVisualOrderText())));
                         str = new StringBuilder();
                     }
+
                     if(!str.isEmpty()) {
                         str.append(" ");
                     }
+
                     str.append(addStr);
                 }
                 tooltipList.add(new TooltipInfo.BlockInfo(ClientTooltipComponent.create(Component.literal(str.toString()).getVisualOrderText())));

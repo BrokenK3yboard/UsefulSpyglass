@@ -1,6 +1,6 @@
 package com.brokenkeyboard.usefulspyglass.network;
 
-import com.brokenkeyboard.usefulspyglass.Constants;
+import com.brokenkeyboard.usefulspyglass.ModRegistry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
@@ -17,7 +17,7 @@ public class PacketHandler {
 
     public static void register() {
 
-        SimpleChannel network = NetworkRegistry.ChannelBuilder.named(new ResourceLocation(Constants.MOD_ID, "main"))
+        SimpleChannel network = NetworkRegistry.ChannelBuilder.named(ResourceLocation.fromNamespaceAndPath(ModRegistry.MOD_ID, "main"))
                 .networkProtocolVersion(() -> "1")
                 .clientAcceptedVersions(string -> true)
                 .serverAcceptedVersions(string -> true)
@@ -25,14 +25,14 @@ public class PacketHandler {
 
         instance = network;
 
-        network.messageBuilder(MarkEntityPacket.class, id(), NetworkDirection.PLAY_TO_SERVER)
-                .decoder(MarkEntityPacket::new)
-                .encoder(MarkEntityPacket::toBytes)
-                .consumerMainThread(MarkEntityPacket::handle)
+        network.messageBuilder(SpyglassEnchPacket.class, id(), NetworkDirection.PLAY_TO_SERVER)
+                .decoder(SpyglassEnchPacket::new)
+                .encoder(SpyglassEnchPacket::toBytes)
+                .consumerMainThread(SpyglassEnchPacket::handle)
                 .add();
     }
 
-    public static void sendMarkingPacket(int entityID, ResourceLocation level) {
-        instance.sendToServer(new MarkEntityPacket(entityID, level));
+    public static void sendSpyglassPacket() {
+        instance.sendToServer(new SpyglassEnchPacket());
     }
 }

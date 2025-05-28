@@ -15,13 +15,12 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(MultiPlayerGameMode.class)
 public class MPGameModeMixin {
 
     @Inject(method = "method_41929", at = @At(value = "INVOKE", target = "Lorg/apache/commons/lang3/mutable/MutableObject;setValue(Ljava/lang/Object;)V",
-            shift = At.Shift.AFTER, ordinal = 0))
+            shift = At.Shift.AFTER, ordinal = 0), remap = false)
     private void allowSpyglassUse(InteractionHand hand, Player player, MutableObject<InteractionResult> object, int value, CallbackInfoReturnable<ServerboundUseItemPacket> cir, @Local ItemStack stack) {
         if (stack.getItem() instanceof SpyglassItem && Minecraft.getInstance().level != null) {
             InteractionResultHolder<ItemStack> result = stack.use(Minecraft.getInstance().level, player, hand);

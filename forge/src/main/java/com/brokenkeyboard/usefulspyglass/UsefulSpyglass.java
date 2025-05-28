@@ -9,35 +9,63 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegisterEvent;
 
+import java.util.ArrayList;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import static com.brokenkeyboard.usefulspyglass.InfoOverlay.*;
 
-@Mod(Constants.MOD_ID)
+@Mod(ModRegistry.MOD_ID)
 public class UsefulSpyglass {
 
+    public static final ArrayList<Predicate<?>> PRECISION_COMPATIBLE = new ArrayList<>();
+    public static final String IMC_ID = "precision";
+
+    public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(Registries.ENTITY_TYPE, ModRegistry.MOD_ID);
+    public static final Supplier<EntityType<?>> WATCHER_EYE = ENTITIES.register("watcher_eye", () -> ModRegistry.SPOTTER_EYE);
+
     public UsefulSpyglass() {
+        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ClientConfig.SPEC);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, CommonConfig.SPEC);
+        ENTITIES.register(bus);
         register(Registries.ENCHANTMENT, ModRegistry::registerEnchantment);
+        bus.addListener(this::imcProcess);
     }
 
-    @Mod.EventBusSubscriber(modid = Constants.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+    public void imcProcess(final InterModProcessEvent event) {
+        event.getIMCStream().forEach(imcMessage -> {
+            if (imcMessage.method().equals(IMC_ID) && imcMessage.messageSupplier().get() instanceof Predicate<?> predicate) {
+                PRECISION_COMPATIBLE.add(predicate);
+            }
+        });
+    }
+
+    @Mod.EventBusSubscriber(modid = ModRegistry.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
     public static class RegistryEvents {
 
         @SubscribeEvent
@@ -46,21 +74,33 @@ public class UsefulSpyglass {
         }
     }
 
-    @Mod.EventBusSubscriber(modid = Constants.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+    @Mod.EventBusSubscriber(modid = ModRegistry.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientRegistryEvents {
 
         @SubscribeEvent
         public static void registerGUI(RegisterGuiOverlaysEvent event) {
             event.registerAbove(VanillaGuiOverlay.DEBUG_TEXT.id(), "hud_base", (gui, poseStack, partialTick, width, height) -> {gui.setupOverlayRenderState(true, false);
-                if (hitResult != null && ((hitResult instanceof EntityHitResult && ClientConfig.DISPLAY_ENTITIES.get()) ||
-                        (hitResult instanceof BlockHitResult && ClientConfig.DISPLAY_BLOCKS.get()))) {
+                if ((!ModList.get().isLoaded("jade") || !ClientConfig.JADE_INTEGRATION.get()) &&
+                        ((hitResult instanceof EntityHitResult && ClientConfig.DISPLAY_ENTITIES.get()) || (hitResult instanceof BlockHitResult && ClientConfig.DISPLAY_BLOCKS.get()))) {
                     DrawOverlay.drawGUI(poseStack, hitResult, tooltipList, rectangleX, rectangleY, rectangleWidth, rectangleHeight);
                 }
             });
         }
     }
 
-    @Mod.EventBusSubscriber(modid = Constants.MOD_ID, value = Dist.CLIENT)
+    @Mod.EventBusSubscriber(modid = ModRegistry.MOD_ID)
+    public static class Events {
+
+        @SubscribeEvent
+        public static void livingDamage(LivingDamageEvent event) {
+            if (event.getSource().is(DamageTypeTags.IS_PROJECTILE) && event.getSource().getDirectEntity() instanceof Projectile projectile &&
+                    projectile.getTags().contains("precision")) {
+                event.setAmount(event.getAmount() * 1.2F);
+            }
+        }
+    }
+
+    @Mod.EventBusSubscriber(modid = ModRegistry.MOD_ID, value = Dist.CLIENT)
     public static class ClientEvents {
 
         @SubscribeEvent

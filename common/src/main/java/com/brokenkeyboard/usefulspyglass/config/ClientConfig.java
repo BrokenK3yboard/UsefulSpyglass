@@ -5,6 +5,7 @@ import net.minecraftforge.common.ForgeConfigSpec;
 public class ClientConfig {
 
     public static final ForgeConfigSpec SPEC;
+    public static ForgeConfigSpec.BooleanValue JADE_INTEGRATION;
     public static ForgeConfigSpec.BooleanValue DISPLAY_ENTITIES;
     public static ForgeConfigSpec.BooleanValue DISPLAY_BLOCKS;
     public static ForgeConfigSpec.DoubleValue HUD_X;
@@ -17,6 +18,10 @@ public class ClientConfig {
     }
 
     public static void registerConfig(ForgeConfigSpec.Builder builder) {
+
+        JADE_INTEGRATION = builder
+                .comment("If enabled and Jade is installed, will use its overlay instead of the built-in overlay.")
+                .define("Jade Overlay", true);
 
         DISPLAY_ENTITIES = builder
                 .comment("If enabled, information on entities will be displayed.")

@@ -1,9 +1,8 @@
 package com.brokenkeyboard.usefulspyglass;
 
-import com.brokenkeyboard.usefulspyglass.config.ClientConfig;
 import com.brokenkeyboard.usefulspyglass.config.CommonConfig;
 import com.brokenkeyboard.usefulspyglass.handler.ServerHandler;
-import com.brokenkeyboard.usefulspyglass.network.packet.MarkEntityPacket;
+import com.brokenkeyboard.usefulspyglass.network.packet.SpyglassEnchPacket;
 import fuzs.forgeconfigapiport.api.config.v2.ForgeConfigRegistry;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.PacketType;
@@ -17,19 +16,14 @@ import java.util.function.BiConsumer;
 
 public class UsefulSpyglass implements ModInitializer {
 
-    public static final PacketType<MarkEntityPacket> MARKING_TYPE = PacketType.create(new ResourceLocation(Constants.MOD_ID, "marking"), MarkEntityPacket::new);
+    public static final PacketType<SpyglassEnchPacket> MARKING_TYPE = PacketType.create(new ResourceLocation(ModRegistry.MOD_ID, "marking"), SpyglassEnchPacket::new);
 
     @Override
     public void onInitialize() {
-        ForgeConfigRegistry.INSTANCE.register(Constants.MOD_ID, ModConfig.Type.CLIENT, ClientConfig.SPEC);
-        ForgeConfigRegistry.INSTANCE.register(Constants.MOD_ID, ModConfig.Type.COMMON, CommonConfig.SPEC);
+        ForgeConfigRegistry.INSTANCE.register(ModRegistry.MOD_ID, ModConfig.Type.COMMON, CommonConfig.SPEC);
+        Registry.register(BuiltInRegistries.ENTITY_TYPE, new ResourceLocation(ModRegistry.MOD_ID, "watcher_eye"), ModRegistry.SPOTTER_EYE);
         ModRegistry.registerEnchantment(bind(BuiltInRegistries.ENCHANTMENT));
-
-        ServerPlayNetworking.registerGlobalReceiver(MARKING_TYPE.getId(), (server, player, handler, buf, responseSender) -> {
-            int entityID = buf.readInt();
-            ResourceLocation dimension = buf.readResourceLocation();
-            ServerHandler.markEntity(player, entityID, dimension);
-        });
+        ServerPlayNetworking.registerGlobalReceiver(MARKING_TYPE.getId(), (server, player, handler, buf, responseSender) -> ServerHandler.handleEnchantments(player));
     }
 
     private static <T> BiConsumer<ResourceLocation, T> bind(Registry<? super T> registry) {

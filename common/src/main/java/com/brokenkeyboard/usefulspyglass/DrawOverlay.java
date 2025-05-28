@@ -55,21 +55,21 @@ public class DrawOverlay {
         graphics.pose().popPose();
     }
 
-    public static void renderText(GuiGraphics graphics, ClientTooltipComponent tooltip, int x, int y) {
+    private static void renderText(GuiGraphics graphics, ClientTooltipComponent tooltip, int x, int y) {
         graphics.pose().translate(0, 0, 400);
         graphics.pose().pushPose();
         tooltip.renderText(CLIENT.font, x, y, graphics.pose().last().pose(), graphics.bufferSource());
         graphics.pose().popPose();
     }
 
-    public static void renderIcon(GuiGraphics graphics, int x, int y, int iconX, int iconY) {
+    private static void renderIcon(GuiGraphics graphics, int x, int y, int iconX, int iconY) {
         graphics.pose().translate(0, 0, 400);
         graphics.pose().pushPose();
         graphics.blit(GUI_ICONS_LOCATION, x, y, iconX, iconY, 9, 9);
         graphics.pose().popPose();
     }
 
-    public static void renderStack(GuiGraphics graphics, ItemStack stack, String countText, int x, int y) {
+    private static void renderStack(GuiGraphics graphics, ItemStack stack, String countText, int x, int y) {
         graphics.pose().translate(0, 0, 400);
         graphics.pose().pushPose();
         Lighting.setupFor3DItems();
