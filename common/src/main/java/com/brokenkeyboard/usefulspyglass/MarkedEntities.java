@@ -6,10 +6,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class MarkedEntities {
 
@@ -46,9 +43,10 @@ public class MarkedEntities {
     public ClientboundSetEntityDataPacket createPacket(Entity entity, boolean shouldGlow) {
         byte entityData = entity.getEntityData().get(EntityAccessor.getDATA_SHARED_FLAGS_ID());
         byte isGlowing = (byte) (shouldGlow ? entityData | 1 << EntityAccessor.getFLAG_GLOWING() : entityData & ~(1 << EntityAccessor.getFLAG_GLOWING()));
-        ClientboundSetEntityDataPacket packet = new ClientboundSetEntityDataPacket(entity.getId(), entity.getEntityData().getNonDefaultValues());
-        packet.packedItems().add(new SynchedEntityData.DataValue<>(EntityAccessor.getDATA_SHARED_FLAGS_ID().id(), EntityAccessor.getDATA_SHARED_FLAGS_ID().serializer(), isGlowing));
-        return packet;
+        List<SynchedEntityData.DataValue<?>> original = entity.getEntityData().getNonDefaultValues();
+        List<SynchedEntityData.DataValue<?>> packedItems = original != null ? original : new ArrayList<>();
+        packedItems.add(new SynchedEntityData.DataValue<>(EntityAccessor.getDATA_SHARED_FLAGS_ID().hashCode(), EntityAccessor.getDATA_SHARED_FLAGS_ID().serializer(), isGlowing));
+        return new ClientboundSetEntityDataPacket(entity.getId(), packedItems);
     }
 
     public Map<UUID, Integer> getMarkedEntities() {

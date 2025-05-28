@@ -11,7 +11,9 @@ import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.neoforged.api.distmarker.Dist;
@@ -28,6 +30,7 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -97,6 +100,18 @@ public class UsefulSpyglass {
         @SubscribeEvent
         public static void registerRenders(EntityRenderersEvent.RegisterRenderers event) {
             event.registerEntityRenderer(ModRegistry.SPOTTER_EYE, context -> new ThrownItemRenderer<>(context, 1.0F, true));
+        }
+    }
+
+    @EventBusSubscriber(modid = ModRegistry.MOD_ID)
+    public static class Events {
+
+        @SubscribeEvent
+        public static void damageEvent(LivingIncomingDamageEvent event) {
+            if (event.getSource().is(DamageTypeTags.IS_PROJECTILE) && event.getSource().getDirectEntity() instanceof Projectile projectile &&
+                    projectile.hasData(PRECISION_BONUS)) {
+                event.setAmount((float) (event.getAmount() * projectile.getData(PRECISION_BONUS)));
+            }
         }
     }
 

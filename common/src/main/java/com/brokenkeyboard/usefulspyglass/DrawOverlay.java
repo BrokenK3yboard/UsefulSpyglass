@@ -69,7 +69,7 @@ public class DrawOverlay {
         graphics.pose().popPose();
     }
 
-    public static void renderStack(GuiGraphics graphics, ItemStack stack, String countText, int x, int y) {
+    private static void renderStack(GuiGraphics graphics, ItemStack stack, String countText, int x, int y) {
         graphics.pose().translate(0, 0, 400);
         graphics.pose().pushPose();
         Lighting.setupFor3DItems();

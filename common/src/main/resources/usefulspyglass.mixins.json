@@ -9,7 +9,6 @@
     "EyeOfEnderAccessor",
     "EyeOfEnderMixin",
     "ItemMixin",
-    "LivingEntityMixin",
     "PlayerMixin",
     "ProjectileWeaponItemMixin",
     "ServerEntityMixin",

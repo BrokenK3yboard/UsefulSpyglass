@@ -6,6 +6,7 @@
   "compatibilityLevel": "JAVA_21",
   "plugin": "com.brokenkeyboard.usefulspyglass.mixin.UsefulSpyglassMixinPlugin",
   "mixins": [
+    "LivingEntityMixin"
   ],
   "client": [
     "MPGameModeMixin",

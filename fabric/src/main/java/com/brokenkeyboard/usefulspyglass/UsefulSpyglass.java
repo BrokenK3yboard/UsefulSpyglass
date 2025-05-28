@@ -22,11 +22,8 @@ public class UsefulSpyglass implements ModInitializer {
 
     @Override
     public void onInitialize() {
-
         NeoForgeConfigRegistry.INSTANCE.register(ModRegistry.MOD_ID, ModConfig.Type.COMMON, CommonConfig.SPEC);
-
         Registry.register(BuiltInRegistries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(ModRegistry.MOD_ID, "watcher_eye"), ModRegistry.SPOTTER_EYE);
-
         PayloadTypeRegistry.playC2S().register(SpyglassEnchPayload.TYPE, SpyglassEnchPayload.STREAM_CODEC);
 
         ServerPlayNetworking.registerGlobalReceiver(SpyglassEnchPayload.TYPE, (payload, context) -> context.server().execute(() ->

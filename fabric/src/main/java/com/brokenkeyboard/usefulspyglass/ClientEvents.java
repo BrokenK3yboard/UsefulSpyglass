@@ -19,11 +19,8 @@ public final class ClientEvents implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-
         NeoForgeConfigRegistry.INSTANCE.register(ModRegistry.MOD_ID, ModConfig.Type.CLIENT, ClientConfig.SPEC);
-
         ClientTickEvents.END_CLIENT_TICK.register(ClientHandler::handleClientTick);
-
         EntityRendererRegistry.register(ModRegistry.SPOTTER_EYE, context -> new ThrownItemRenderer<>(context, 1.0F, true));
 
         HudRenderCallback.EVENT.register((graphics, tickDelta) -> {
