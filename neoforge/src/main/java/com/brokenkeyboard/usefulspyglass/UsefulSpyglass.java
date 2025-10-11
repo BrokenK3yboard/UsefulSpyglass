@@ -40,7 +40,7 @@ import java.util.ArrayList;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static com.brokenkeyboard.usefulspyglass.InfoOverlay.*;
+import static com.brokenkeyboard.usefulspyglass.DrawOverlay.hitResult;
 
 @Mod(ModRegistry.MOD_ID)
 public class UsefulSpyglass {
@@ -92,7 +92,7 @@ public class UsefulSpyglass {
             event.registerAbove(VanillaGuiLayers.DEBUG_OVERLAY, ResourceLocation.fromNamespaceAndPath(ModRegistry.MOD_ID, "hud_base"), (gui, deltaTracker) -> {
                 if ((!ModList.get().isLoaded("jade") || !ClientConfig.JADE_INTEGRATION.get()) &&
                         ((hitResult instanceof EntityHitResult && ClientConfig.DISPLAY_ENTITIES.get()) || (hitResult instanceof BlockHitResult && ClientConfig.DISPLAY_BLOCKS.get()))) {
-                    DrawOverlay.drawGUI(gui, hitResult, tooltipList, rectangleX, rectangleY, rectangleWidth, rectangleHeight);
+                    DrawOverlay.drawGUI(gui);
                 }
             });
         }

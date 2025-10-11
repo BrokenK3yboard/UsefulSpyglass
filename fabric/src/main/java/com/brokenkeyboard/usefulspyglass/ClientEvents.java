@@ -13,7 +13,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.neoforged.fml.config.ModConfig;
 
-import static com.brokenkeyboard.usefulspyglass.InfoOverlay.*;
+import static com.brokenkeyboard.usefulspyglass.DrawOverlay.hitResult;
 
 public final class ClientEvents implements ClientModInitializer {
 
@@ -26,7 +26,7 @@ public final class ClientEvents implements ClientModInitializer {
         HudRenderCallback.EVENT.register((graphics, tickDelta) -> {
             if ((!FabricLoader.getInstance().isModLoaded("jade") || !ClientConfig.JADE_INTEGRATION.get()) &&
                     ((hitResult instanceof EntityHitResult && ClientConfig.DISPLAY_ENTITIES.get()) || (hitResult instanceof BlockHitResult && ClientConfig.DISPLAY_BLOCKS.get()))) {
-                DrawOverlay.drawGUI(graphics, hitResult, tooltipList, rectangleX, rectangleY, rectangleWidth, rectangleHeight);
+                DrawOverlay.drawGUI(graphics);
             }
         });
     }

@@ -1,9 +1,14 @@
 package com.brokenkeyboard.usefulspyglass.platform;
 
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.level.block.state.BlockState;
+
+import java.util.List;
 
 public interface IPlatformHelper {
     boolean hasSpyglassEnchant(Player player, ResourceKey<Enchantment> enchant);
@@ -12,4 +17,6 @@ public interface IPlatformHelper {
     void useSpyglassEnch();
     void setPrecisionBonus(Projectile projectile);
     double getPrecisionBonus(Projectile projectile);
+    void livingTooltipCallback(LivingEntity entity, List<ClientTooltipComponent> eventTooltips);
+    void blockTooltipCallback(BlockState state, List<ClientTooltipComponent> eventTooltips);
 }

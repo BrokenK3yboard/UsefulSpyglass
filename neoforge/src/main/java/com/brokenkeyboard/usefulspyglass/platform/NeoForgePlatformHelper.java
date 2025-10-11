@@ -3,8 +3,11 @@ package com.brokenkeyboard.usefulspyglass.platform;
 import com.brokenkeyboard.usefulspyglass.Curios;
 import com.brokenkeyboard.usefulspyglass.ModRegistry;
 import com.brokenkeyboard.usefulspyglass.UsefulSpyglass;
+import com.brokenkeyboard.usefulspyglass.api.event.BlockTooltipEvent;
+import com.brokenkeyboard.usefulspyglass.api.event.LivingTooltipEvent;
 import com.brokenkeyboard.usefulspyglass.network.SpyglassEnchPayload;
 import com.brokenkeyboard.usefulspyglass.network.ServerHandler;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -16,9 +19,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.fml.ModList;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import java.util.List;
 import java.util.function.Predicate;
 
 public class NeoForgePlatformHelper implements IPlatformHelper {
@@ -70,5 +76,17 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
     @Override
     public double getPrecisionBonus(Projectile projectile) {
         return projectile.getData(UsefulSpyglass.PRECISION_BONUS);
+    }
+
+    @Override
+    public void livingTooltipCallback(LivingEntity entity, List<ClientTooltipComponent> eventTooltips) {
+        LivingTooltipEvent event = new LivingTooltipEvent(entity, eventTooltips);
+        NeoForge.EVENT_BUS.post(event);
+    }
+
+    @Override
+    public void blockTooltipCallback(BlockState state, List<ClientTooltipComponent> tooltipInfoList) {
+        BlockTooltipEvent event = new BlockTooltipEvent(state, tooltipInfoList);
+        NeoForge.EVENT_BUS.post(event);
     }
 }
