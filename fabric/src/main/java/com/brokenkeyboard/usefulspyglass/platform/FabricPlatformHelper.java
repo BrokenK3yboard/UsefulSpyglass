@@ -10,6 +10,7 @@ import com.brokenkeyboard.usefulspyglass.network.ServerHandler;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -88,7 +89,7 @@ public class FabricPlatformHelper implements IPlatformHelper {
     }
 
     @Override
-    public void blockTooltipCallback(BlockState state, List<ClientTooltipComponent> eventTooltips) {
-        BlockTooltipCallback.EVENT.invoker().blockTooltipEvent(state, eventTooltips);
+    public void blockTooltipCallback(BlockState state, BlockPos pos, List<ClientTooltipComponent> eventTooltips) {
+        BlockTooltipCallback.EVENT.invoker().blockTooltipEvent(state, pos, eventTooltips);
     }
 }

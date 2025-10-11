@@ -1,6 +1,7 @@
 package com.brokenkeyboard.usefulspyglass.platform;
 
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -18,5 +19,5 @@ public interface IPlatformHelper {
     void setPrecisionBonus(Projectile projectile);
     double getPrecisionBonus(Projectile projectile);
     void livingTooltipCallback(LivingEntity entity, List<ClientTooltipComponent> eventTooltips);
-    void blockTooltipCallback(BlockState state, List<ClientTooltipComponent> eventTooltips);
+    void blockTooltipCallback(BlockState state, BlockPos pos, List<ClientTooltipComponent> eventTooltips);
 }

@@ -8,6 +8,7 @@ import com.brokenkeyboard.usefulspyglass.api.event.LivingTooltipEvent;
 import com.brokenkeyboard.usefulspyglass.network.SpyglassEnchPayload;
 import com.brokenkeyboard.usefulspyglass.network.ServerHandler;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -85,8 +86,8 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
     }
 
     @Override
-    public void blockTooltipCallback(BlockState state, List<ClientTooltipComponent> tooltipInfoList) {
-        BlockTooltipEvent event = new BlockTooltipEvent(state, tooltipInfoList);
+    public void blockTooltipCallback(BlockState state, BlockPos pos, List<ClientTooltipComponent> tooltipInfoList) {
+        BlockTooltipEvent event = new BlockTooltipEvent(state, pos, tooltipInfoList);
         NeoForge.EVENT_BUS.post(event);
     }
 }

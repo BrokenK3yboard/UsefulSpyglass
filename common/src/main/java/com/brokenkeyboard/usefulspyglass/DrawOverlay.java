@@ -101,7 +101,7 @@ public class DrawOverlay {
             };
 
             createTextLines(textConsumer, blockName, ChatFormatting.WHITE);
-            Services.PLATFORM.blockTooltipCallback(state, toAdd);
+            Services.PLATFORM.blockTooltipCallback(state, pos, toAdd);
         }
 
         for (ClientTooltipComponent component : toAdd) {
