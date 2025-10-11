@@ -37,7 +37,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static com.brokenkeyboard.usefulspyglass.InfoOverlay.*;
+import static com.brokenkeyboard.usefulspyglass.DrawOverlay.hitResult;
 
 @Mod(ModRegistry.MOD_ID)
 public class UsefulSpyglass {
@@ -79,10 +79,10 @@ public class UsefulSpyglass {
 
         @SubscribeEvent
         public static void registerGUI(RegisterGuiOverlaysEvent event) {
-            event.registerAbove(VanillaGuiOverlay.DEBUG_TEXT.id(), "hud_base", (gui, poseStack, partialTick, width, height) -> {gui.setupOverlayRenderState(true, false);
+            event.registerAbove(VanillaGuiOverlay.DEBUG_TEXT.id(), "hud_base", (gui, graphics, partialTick, width, height) -> {gui.setupOverlayRenderState(true, false);
                 if ((!ModList.get().isLoaded("jade") || !ClientConfig.JADE_INTEGRATION.get()) &&
                         ((hitResult instanceof EntityHitResult && ClientConfig.DISPLAY_ENTITIES.get()) || (hitResult instanceof BlockHitResult && ClientConfig.DISPLAY_BLOCKS.get()))) {
-                    DrawOverlay.drawGUI(poseStack, hitResult, tooltipList, rectangleX, rectangleY, rectangleWidth, rectangleHeight);
+                    DrawOverlay.drawGUI(graphics);
                 }
             });
         }
