@@ -8,12 +8,13 @@
   "mixins": [
     "EyeOfEnderMixin",
     "PlayerMixin",
-    "RayTracingMixin",
     "ServerEntityMixin",
     "TrackedEntityMixin"
   ],
   "client": [
-    "MPGameModeMixin"
+    "MPGameModeMixin",
+    "RayTracingMixin",
+    "WailaTickHandlerMixin"
   ],
   "server": [
   ],

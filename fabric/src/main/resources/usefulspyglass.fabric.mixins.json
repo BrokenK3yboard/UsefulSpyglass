@@ -11,12 +11,13 @@
     "EyeOfEnderMixin",
     "LivingEntityMixin",
     "PlayerMixin",
-    "RayTracingMixin",
     "ServerEntityMixin",
     "TrackedEntityMixin"
   ],
   "client": [
-    "MPGameModeMixin"
+    "MPGameModeMixin",
+    "RayTracingMixin",
+    "WailaTickHandlerMixin"
   ],
   "server": [
   ],
