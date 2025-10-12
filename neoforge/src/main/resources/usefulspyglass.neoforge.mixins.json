@@ -9,7 +9,8 @@
   ],
   "client": [
     "MPGameModeMixin",
-    "RayTracingMixin"
+    "RayTracingMixin",
+    "WailaTickHandlerMixin"
   ],
   "server": [
   ],

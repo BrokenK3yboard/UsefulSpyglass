@@ -22,7 +22,7 @@ public class UsefulSpyglassMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClass, String mixinClass) {
-        return !mixinClass.contains("RayTracingMixin") || FabricLoader.getInstance().isModLoaded("jade");
+        return !mixinClass.contains("RayTracingMixin") || !mixinClass.contains("WailaTickHanderMixin") || FabricLoader.getInstance().isModLoaded("jade");
     }
 
     @Override

@@ -9,6 +9,7 @@ public class CommonConfig {
     public static ModConfigSpec.IntValue PRECISION_COOLDOWN;
     public static ModConfigSpec.IntValue SPOTTER_RANGE;
     public static ModConfigSpec.IntValue SPOTTER_DURATION;
+    public static ModConfigSpec.BooleanValue JADE_REQUIRES_SPYGLASS;
 
     static {
         ModConfigSpec.Builder configBuilder = new ModConfigSpec.Builder();
@@ -35,5 +36,9 @@ public class CommonConfig {
                 .comment("The amount of time Ender eyes summoned by the Spotter enchantment remain active. 20 ticks = 1 second.")
                 .comment("The cooldown time is the duration multipled by 1.4.")
                 .defineInRange("Spotter duration", 900, 600, 1200);
+
+        JADE_REQUIRES_SPYGLASS = builder
+                .comment("If enabled and Jade is installed, tooltips will not be shown unless using a spyglass.")
+                .define("Jade tooltips require spyglass", false);
     }
 }
