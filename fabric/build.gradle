@@ -17,6 +17,7 @@ dependencies {
         parchment("org.parchmentmc.data:parchment-${parchment_minecraft}:${parchment_version}@zip")
     }
     modImplementation "maven.modrinth:jade:${jade_version}+fabric"
+    modImplementation "maven.modrinth:shoulder-surfing-reloaded:${shoulder_surfing_version}+fabric"
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
     modImplementation "dev.emi:trinkets:${trinkets_version}"

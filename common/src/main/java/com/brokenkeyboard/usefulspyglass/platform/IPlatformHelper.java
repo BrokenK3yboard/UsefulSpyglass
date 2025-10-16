@@ -1,5 +1,6 @@
 package com.brokenkeyboard.usefulspyglass.platform;
 
+import net.minecraft.client.Camera;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
@@ -8,6 +9,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.HitResult;
 
 import java.util.List;
 
@@ -15,6 +17,7 @@ public interface IPlatformHelper {
     boolean hasSpyglassEnchant(Player player, ResourceKey<Enchantment> enchant);
     boolean hasPrecision(Player player);
     boolean testPrecisionCompat(Player player);
+    HitResult getHitResult(Camera camera, float partialTick, Player player);
     void useSpyglassEnch();
     void setPrecisionBonus(Projectile projectile);
     double getPrecisionBonus(Projectile projectile);

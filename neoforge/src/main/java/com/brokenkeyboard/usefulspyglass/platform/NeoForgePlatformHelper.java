@@ -1,12 +1,16 @@
 package com.brokenkeyboard.usefulspyglass.platform;
 
 import com.brokenkeyboard.usefulspyglass.Curios;
+import com.brokenkeyboard.usefulspyglass.EntityFinder;
 import com.brokenkeyboard.usefulspyglass.ModRegistry;
 import com.brokenkeyboard.usefulspyglass.UsefulSpyglass;
 import com.brokenkeyboard.usefulspyglass.api.event.BlockTooltipEvent;
 import com.brokenkeyboard.usefulspyglass.api.event.LivingTooltipEvent;
 import com.brokenkeyboard.usefulspyglass.network.SpyglassEnchPayload;
 import com.brokenkeyboard.usefulspyglass.network.ServerHandler;
+import com.github.exopandora.shouldersurfing.api.client.ShoulderSurfing;
+import com.github.exopandora.shouldersurfing.api.model.PickContext;
+import net.minecraft.client.Camera;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -20,7 +24,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.HitResult;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -62,6 +68,15 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
             }
         }
         return false;
+    }
+
+    @Override
+    public HitResult getHitResult(Camera camera, float partialTick, Player player) {
+        if (ModList.get().isLoaded("shouldersurfing") && ShoulderSurfing.getInstance().isShoulderSurfing()) {
+            PickContext pickContext = new PickContext.Builder(camera).withEntity(player).withFluidContext(ClipContext.Fluid.NONE).build();
+            return ShoulderSurfing.getInstance().getObjectPicker().pick(pickContext, 100, partialTick, player);
+        }
+        return EntityFinder.getAimedObject(player.level(), camera.getEntity(), camera.getPosition(), camera.getEntity().getViewVector(partialTick));
     }
 
     @Override
