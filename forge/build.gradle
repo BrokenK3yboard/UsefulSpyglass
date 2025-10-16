@@ -57,6 +57,7 @@ dependencies {
     implementation(jarJar("io.github.llamalad7:mixinextras-forge:0.4.1"))
     compileOnly 'org.jetbrains:annotations:26.0.1'
     modImplementation "maven.modrinth:jade:${jade_version}+forge"
+    implementation "maven.modrinth:shoulder-surfing-reloaded:${shoulder_surfing_version}+forge"
     runtimeOnly("top.theillusivec4.curios:curios-forge:${curios_version}")
     compileOnly("top.theillusivec4.curios:curios-forge:${curios_version}:api")
 }

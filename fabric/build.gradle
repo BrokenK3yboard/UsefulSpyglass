@@ -33,6 +33,7 @@ dependencies {
     implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
     implementation project(":common")
     modImplementation "maven.modrinth:jade:${jade_version}+fabric"
+    modImplementation "maven.modrinth:shoulder-surfing-reloaded:${shoulder_surfing_version}+fabric"
     modImplementation "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${forge_config_api_version}"
     modImplementation "dev.emi:trinkets:${trinkets_version}"
 }

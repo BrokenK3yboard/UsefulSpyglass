@@ -1,13 +1,18 @@
 package com.brokenkeyboard.usefulspyglass.platform;
 
+import com.brokenkeyboard.usefulspyglass.EntityFinder;
 import com.brokenkeyboard.usefulspyglass.ModRegistry;
 import com.brokenkeyboard.usefulspyglass.Trinkets;
 import com.brokenkeyboard.usefulspyglass.api.event.BlockTooltipCallback;
 import com.brokenkeyboard.usefulspyglass.api.event.LivingTooltipCallback;
 import com.brokenkeyboard.usefulspyglass.handler.ServerHandler;
 import com.brokenkeyboard.usefulspyglass.network.packet.SpyglassEnchPacket;
+import com.github.exopandora.shouldersurfing.api.client.ShoulderSurfing;
+import com.github.exopandora.shouldersurfing.api.model.PickContext;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.Camera;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
@@ -19,7 +24,9 @@ import net.minecraft.world.item.ProjectileWeaponItem;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.HitResult;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -62,6 +69,15 @@ public class FabricPlatformHelper implements IPlatformHelper {
             }
         }
         return false;
+    }
+
+    @Override
+    public HitResult getHitResult(Camera camera, float partialTick, Player player) {
+        if (FabricLoader.getInstance().isModLoaded("trinkets") && ShoulderSurfing.getInstance().isShoulderSurfing()) {
+            PickContext pickContext = new PickContext.Builder(camera).withEntity(player).withFluidContext(ClipContext.Fluid.NONE).build();
+            return ShoulderSurfing.getInstance().getObjectPicker().pick(pickContext, 100, partialTick, Minecraft.getInstance().gameMode);
+        }
+        return EntityFinder.getAimedObject(player.level(), camera.getEntity(), camera.getPosition(), camera.getEntity().getViewVector(partialTick));
     }
 
     @Override
