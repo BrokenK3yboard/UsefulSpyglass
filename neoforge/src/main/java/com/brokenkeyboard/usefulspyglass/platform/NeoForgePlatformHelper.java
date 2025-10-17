@@ -6,8 +6,8 @@ import com.brokenkeyboard.usefulspyglass.ModRegistry;
 import com.brokenkeyboard.usefulspyglass.UsefulSpyglass;
 import com.brokenkeyboard.usefulspyglass.api.event.BlockTooltipEvent;
 import com.brokenkeyboard.usefulspyglass.api.event.LivingTooltipEvent;
-import com.brokenkeyboard.usefulspyglass.network.SpyglassEnchPayload;
 import com.brokenkeyboard.usefulspyglass.network.ServerHandler;
+import com.brokenkeyboard.usefulspyglass.network.SpyglassEnchPayload;
 import com.github.exopandora.shouldersurfing.api.client.ShoulderSurfing;
 import com.github.exopandora.shouldersurfing.api.model.PickContext;
 import com.google.common.collect.Maps;
@@ -93,8 +93,8 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
     }
 
     @Override
-    public double getPrecisionBonus(Projectile projectile) {
-        return projectile.getData(UsefulSpyglass.PRECISION_BONUS);
+    public boolean hasPrecisionBonus(Projectile projectile) {
+        return projectile.hasData(UsefulSpyglass.PRECISION_BONUS);
     }
 
     @Override

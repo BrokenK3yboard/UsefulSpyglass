@@ -21,7 +21,7 @@ public interface IPlatformHelper {
     HitResult getHitResult(Camera camera, float partialTick, Player player);
     void useSpyglassEnch();
     void setPrecisionBonus(Projectile projectile);
-    double getPrecisionBonus(Projectile projectile);
+    boolean hasPrecisionBonus(Projectile projectile);
     void livingTooltipCallback(LivingEntity entity, List<ClientTooltipComponent> eventTooltips);
     void blockTooltipCallback(BlockState state, BlockPos pos, List<ClientTooltipComponent> eventTooltips);
     ConcurrentMap<String, String> getModList();

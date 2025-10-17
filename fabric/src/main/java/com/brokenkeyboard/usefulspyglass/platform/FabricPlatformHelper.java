@@ -33,7 +33,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.HitResult;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Predicate;
 
@@ -95,9 +94,8 @@ public class FabricPlatformHelper implements IPlatformHelper {
     }
 
     @Override
-    public double getPrecisionBonus(Projectile projectile) {
-        Optional<Double> bonus = Optional.ofNullable(projectile.getAttached(UsefulSpyglass.PRECISION_BONUS));
-        return bonus.orElse(1D);
+    public boolean hasPrecisionBonus(Projectile projectile) {
+        return projectile.hasAttached(UsefulSpyglass.PRECISION_BONUS);
     }
 
     @Override
