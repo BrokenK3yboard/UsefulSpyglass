@@ -10,6 +10,7 @@ import com.brokenkeyboard.usefulspyglass.network.SpyglassEnchPayload;
 import com.brokenkeyboard.usefulspyglass.network.ServerHandler;
 import com.github.exopandora.shouldersurfing.api.client.ShoulderSurfing;
 import com.github.exopandora.shouldersurfing.api.model.PickContext;
+import com.google.common.collect.Maps;
 import net.minecraft.client.Camera;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.core.BlockPos;
@@ -30,8 +31,10 @@ import net.minecraft.world.phys.HitResult;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforgespi.language.IModInfo;
 
 import java.util.List;
+import java.util.concurrent.ConcurrentMap;
 import java.util.function.Predicate;
 
 public class NeoForgePlatformHelper implements IPlatformHelper {
@@ -104,5 +107,17 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
     public void blockTooltipCallback(BlockState state, BlockPos pos, List<ClientTooltipComponent> tooltipInfoList) {
         BlockTooltipEvent event = new BlockTooltipEvent(state, pos, tooltipInfoList);
         NeoForge.EVENT_BUS.post(event);
+    }
+
+    @Override
+    public ConcurrentMap<String, String> getModList() {
+        ConcurrentMap<String, String> map = Maps.newConcurrentMap();
+        List<IModInfo> list = ModList.get().getMods();
+        for (IModInfo mod : list) {
+            String modid = mod.getModId();
+            String name = mod.getDisplayName() != null ? mod.getDisplayName() : modid;
+            map.put(modid, name);
+        }
+        return map;
     }
 }

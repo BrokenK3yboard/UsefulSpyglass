@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.HitResult;
 
 import java.util.List;
+import java.util.concurrent.ConcurrentMap;
 
 public interface IPlatformHelper {
     boolean hasSpyglassEnchant(Player player, ResourceKey<Enchantment> enchant);
@@ -23,4 +24,5 @@ public interface IPlatformHelper {
     double getPrecisionBonus(Projectile projectile);
     void livingTooltipCallback(LivingEntity entity, List<ClientTooltipComponent> eventTooltips);
     void blockTooltipCallback(BlockState state, BlockPos pos, List<ClientTooltipComponent> eventTooltips);
+    ConcurrentMap<String, String> getModList();
 }

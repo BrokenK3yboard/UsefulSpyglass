@@ -8,6 +8,7 @@ public class ClientConfig {
     public static ModConfigSpec.BooleanValue JADE_INTEGRATION;
     public static ModConfigSpec.BooleanValue DISPLAY_ENTITIES;
     public static ModConfigSpec.BooleanValue DISPLAY_BLOCKS;
+    public static ModConfigSpec.BooleanValue DISPLAY_NAMESPACE;
     public static ModConfigSpec.DoubleValue HUD_X;
     public static ModConfigSpec.DoubleValue HUD_Y;
 
@@ -30,6 +31,10 @@ public class ClientConfig {
         DISPLAY_BLOCKS = builder
                 .comment("If enabled, block image and name will be displayed.")
                 .define("Display blocks", true);
+
+        DISPLAY_NAMESPACE = builder
+                .comment("If enabled the namespace of blocks and entities will be displayed")
+                .define("Display namespace", true);
 
         HUD_X = builder
                 .comment("Change the horizontal position of the HUD (center alignment). Default 0.09.")
