@@ -10,6 +10,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.TooltipRenderUtil;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobCategory;
@@ -25,10 +26,12 @@ import org.apache.commons.lang3.mutable.MutableInt;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentMap;
 import java.util.function.Consumer;
 
 public class DrawOverlay {
 
+    private static final ConcurrentMap<String, String> MODLIST = Services.PLATFORM.getModList();
     private static final Minecraft CLIENT = Minecraft.getInstance();
     public static HitResult hitResult = null;
 
@@ -98,6 +101,12 @@ public class DrawOverlay {
             tooltips.add(status);
             baseHeight.add(status.getHeight());
             baseWidth.setValue(Math.max(baseWidth.getValue(), status.getWidth()));
+
+            if (ClientConfig.DISPLAY_NAMESPACE.get()) {
+                String namespace = MODLIST.get(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()).getNamespace());
+                createTextLines(textConsumer, namespace, ChatFormatting.BLUE);
+            }
+
             Services.PLATFORM.livingTooltipCallback(entity, toAdd);
         } else if (result instanceof BlockHitResult blockHit && CLIENT.player != null) {
             BlockPos pos = blockHit.getBlockPos();
@@ -112,6 +121,12 @@ public class DrawOverlay {
             };
 
             createTextLines(textConsumer, blockName, ChatFormatting.WHITE);
+
+            if (ClientConfig.DISPLAY_NAMESPACE.get()) {
+                String namespace = MODLIST.get(BuiltInRegistries.BLOCK.getKey(state.getBlock()).getNamespace());
+                createTextLines(textConsumer, namespace, ChatFormatting.BLUE);
+            }
+
             Services.PLATFORM.blockTooltipCallback(state, pos, toAdd);
         }
 

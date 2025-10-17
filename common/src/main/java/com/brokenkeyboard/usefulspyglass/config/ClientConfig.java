@@ -8,6 +8,7 @@ public class ClientConfig {
     public static ForgeConfigSpec.BooleanValue JADE_INTEGRATION;
     public static ForgeConfigSpec.BooleanValue DISPLAY_ENTITIES;
     public static ForgeConfigSpec.BooleanValue DISPLAY_BLOCKS;
+    public static ForgeConfigSpec.BooleanValue DISPLAY_NAMESPACE;
     public static ForgeConfigSpec.DoubleValue HUD_X;
     public static ForgeConfigSpec.DoubleValue HUD_Y;
 
@@ -30,6 +31,10 @@ public class ClientConfig {
         DISPLAY_BLOCKS = builder
                 .comment("If enabled, block image and name will be displayed.")
                 .define("Display blocks", true);
+
+        DISPLAY_NAMESPACE = builder
+                .comment("If enabled the namespace of blocks and entities will be displayed")
+                .define("Display namespace", true);
 
         HUD_X = builder
                 .comment("Change the horizontal position of the HUD (center alignment). Default 0.09.")

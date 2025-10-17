@@ -9,6 +9,7 @@ import com.brokenkeyboard.usefulspyglass.handler.ServerHandler;
 import com.brokenkeyboard.usefulspyglass.network.packet.SpyglassEnchPacket;
 import com.github.exopandora.shouldersurfing.api.client.ShoulderSurfing;
 import com.github.exopandora.shouldersurfing.api.model.PickContext;
+import com.google.common.collect.Maps;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Camera;
@@ -29,6 +30,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.HitResult;
 
 import java.util.List;
+import java.util.concurrent.ConcurrentMap;
 import java.util.function.Predicate;
 
 public class FabricPlatformHelper implements IPlatformHelper {
@@ -93,5 +95,13 @@ public class FabricPlatformHelper implements IPlatformHelper {
     @Override
     public void blockTooltipCallback(BlockState state, BlockPos pos, List<ClientTooltipComponent> eventTooltips) {
         BlockTooltipCallback.EVENT.invoker().blockTooltipEvent(state, pos, eventTooltips);
+    }
+
+    @Override
+    public ConcurrentMap<String, String> getModList() {
+        ConcurrentMap<String, String> map = Maps.newConcurrentMap();
+        FabricLoader.getInstance().getAllMods().forEach(modContainer ->
+                map.put(modContainer.getMetadata().getId(), modContainer.getMetadata().getName()));
+        return map;
     }
 }

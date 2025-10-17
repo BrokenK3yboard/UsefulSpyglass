@@ -11,6 +11,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.HitResult;
 
 import java.util.List;
+import java.util.concurrent.ConcurrentMap;
 
 public interface IPlatformHelper {
     EnchantmentCategory getSpyglassEnchCategory();
@@ -21,4 +22,5 @@ public interface IPlatformHelper {
     void useSpyglassEnch();
     void livingTooltipCallback(LivingEntity entity, List<ClientTooltipComponent> eventTooltips);
     void blockTooltipCallback(BlockState state, BlockPos pos, List<ClientTooltipComponent> eventTooltips);
+    ConcurrentMap<String, String> getModList();
 }
