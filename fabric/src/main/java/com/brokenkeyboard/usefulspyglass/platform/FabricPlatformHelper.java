@@ -75,7 +75,7 @@ public class FabricPlatformHelper implements IPlatformHelper {
 
     @Override
     public HitResult getHitResult(Camera camera, float partialTick, Player player) {
-        if (FabricLoader.getInstance().isModLoaded("trinkets") && ShoulderSurfing.getInstance().isShoulderSurfing()) {
+        if (FabricLoader.getInstance().isModLoaded("shouldersurfing") && ShoulderSurfing.getInstance().isShoulderSurfing()) {
             PickContext pickContext = new PickContext.Builder(camera).withEntity(player).withFluidContext(ClipContext.Fluid.NONE).build();
             return ShoulderSurfing.getInstance().getObjectPicker().pick(pickContext, 100, partialTick, player);
         }
