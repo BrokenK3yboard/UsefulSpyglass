@@ -2,6 +2,8 @@ package com.brokenkeyboard.usefulspyglass;
 
 import com.brokenkeyboard.usefulspyglass.config.ClientConfig;
 import com.brokenkeyboard.usefulspyglass.platform.Services;
+import com.mojang.blaze3d.platform.Lighting;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -13,6 +15,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
@@ -39,14 +42,22 @@ public class DrawOverlay {
         ArrayList<InfoTooltip> tooltips = new ArrayList<>(), eventTooltips = new ArrayList<>();
         TooltipDimensions dimension = createTooltips(hitResult, tooltips, eventTooltips);
 
+        boolean isBlock = DrawOverlay.hitResult instanceof BlockHitResult && Minecraft.getInstance().player != null;
+        boolean oneLine = tooltips.size() == 1;
         int rectangleLeft = xPos - dimension.WIDTH / 2;
         int rectangleX = adjustAxis(rectangleLeft, dimension.WIDTH, screenWidth);
         int rectangleY = adjustAxis(yPos, dimension.BASE_HEIGHT + dimension.EXTRA_HEIGHT, screenHeight);
+        int yOffset = isBlock && oneLine ? rectangleY + Minecraft.getInstance().font.lineHeight - (Minecraft.getInstance().font.lineHeight / 2) : rectangleY;
 
         graphics.pose().pushPose();
-        graphics.drawManaged(() -> TooltipRenderUtil.renderTooltipBackground(graphics, rectangleX, rectangleY, dimension.WIDTH, dimension.BASE_HEIGHT + dimension.EXTRA_HEIGHT, 400));
+        graphics.drawManaged(() -> TooltipRenderUtil.renderTooltipBackground(graphics, rectangleX, rectangleY, dimension.WIDTH, isBlock && oneLine ? 18 : dimension.BASE_HEIGHT + dimension.EXTRA_HEIGHT, 400));
 
-        int yOffset = rectangleY;
+        if (isBlock) {
+            BlockState state = Minecraft.getInstance().player.level().getBlockState(((BlockHitResult) hitResult).getBlockPos());
+            ItemStack stack = state.getBlock().getCloneItemStack(Minecraft.getInstance().player.level(), ((BlockHitResult) hitResult).getBlockPos(), state);
+            int stackYPos = oneLine ? rectangleY : rectangleY + dimension.BASE_HEIGHT / 2 - 8;
+            renderStack(graphics, stack, rectangleLeft, stackYPos);
+        }
 
         for (InfoTooltip info : tooltips) {
             info.render(graphics, xPos - dimension.X_OFFSET, yOffset);
@@ -157,6 +168,18 @@ public class DrawOverlay {
         if (entity.getType().getCategory().isFriendly()) return ChatFormatting.GREEN;
         if (entity.getType().getCategory() == MobCategory.MONSTER) return ChatFormatting.RED;
         return ChatFormatting.WHITE;
+    }
+
+    private static void renderStack(GuiGraphics graphics, ItemStack stack, int x, int y) {
+        graphics.pose().translate(0, 0, 400);
+        graphics.pose().pushPose();
+        Lighting.setupFor3DItems();
+        RenderSystem.enableDepthTest();
+        graphics.renderItem(stack, x, y);
+        graphics.renderItemDecorations(Minecraft.getInstance().font, stack, x, y, null);
+        Lighting.setupForFlatItems();
+        RenderSystem.disableDepthTest();
+        graphics.pose().popPose();
     }
 
     private record TooltipDimensions(int X_OFFSET, int BASE_HEIGHT, int X_OFFSET_EXTRA, int EXTRA_HEIGHT, int WIDTH) { }

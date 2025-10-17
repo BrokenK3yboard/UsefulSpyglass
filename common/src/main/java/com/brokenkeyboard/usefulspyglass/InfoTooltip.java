@@ -1,14 +1,9 @@
 package com.brokenkeyboard.usefulspyglass;
 
-import com.mojang.blaze3d.platform.Lighting;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
 
 import java.util.Map;
 
@@ -55,17 +50,12 @@ public abstract class InfoTooltip {
 
         @Override
         public int getHeight() {
-            return 18;
+            return TOOLTIP.getHeight();
         }
 
         @Override
         void render(GuiGraphics graphics, int x, int y) {
-            if (DrawOverlay.hitResult instanceof BlockHitResult blockHit && Minecraft.getInstance().player != null) {
-                BlockState state = Minecraft.getInstance().player.level().getBlockState(blockHit.getBlockPos());
-                ItemStack stack = state.getBlock().getCloneItemStack(Minecraft.getInstance().player.level(), blockHit.getBlockPos(), state);
-                renderStack(graphics, stack, x, y + 1);
-            }
-            renderText(graphics, TOOLTIP, x + 18, y + Minecraft.getInstance().font.lineHeight - (Minecraft.getInstance().font.lineHeight / 2));
+            renderText(graphics, TOOLTIP, x + 18, y);
         }
     }
 
@@ -131,18 +121,6 @@ public abstract class InfoTooltip {
         graphics.pose().translate(0, 0, 400);
         graphics.pose().pushPose();
         graphics.blitSprite(location, x, y, 9, 9);
-        graphics.pose().popPose();
-    }
-
-    private static void renderStack(GuiGraphics graphics, ItemStack stack, int x, int y) {
-        graphics.pose().translate(0, 0, 400);
-        graphics.pose().pushPose();
-        Lighting.setupFor3DItems();
-        RenderSystem.enableDepthTest();
-        graphics.renderItem(stack, x, y);
-        graphics.renderItemDecorations(Minecraft.getInstance().font, stack, x, y, null);
-        Lighting.setupForFlatItems();
-        RenderSystem.disableDepthTest();
         graphics.pose().popPose();
     }
 }
