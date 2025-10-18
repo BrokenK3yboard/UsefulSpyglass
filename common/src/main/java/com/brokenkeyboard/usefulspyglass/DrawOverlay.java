@@ -46,14 +46,16 @@ public class DrawOverlay {
         TooltipDimensions dimension = createTooltips(hitResult, tooltips, eventTooltips);
 
         boolean isBlock = DrawOverlay.hitResult instanceof BlockHitResult && Minecraft.getInstance().player != null;
-        boolean oneLine = tooltips.size() == 1;
+        boolean oneLine = tooltips.size() + eventTooltips.size() == 1;
+        boolean hasExtraTooltips = !eventTooltips.isEmpty();
         int rectangleLeft = xPos - dimension.WIDTH / 2;
         int rectangleX = adjustAxis(rectangleLeft, dimension.WIDTH, screenWidth);
         int rectangleY = adjustAxis(yPos, dimension.BASE_HEIGHT + dimension.EXTRA_HEIGHT, screenHeight);
+        int rectangleHeight = isBlock && oneLine ? 18 : dimension.BASE_HEIGHT + dimension.EXTRA_HEIGHT;
         int yOffset = isBlock && oneLine ? rectangleY + Minecraft.getInstance().font.lineHeight - (Minecraft.getInstance().font.lineHeight / 2) : rectangleY;
 
         graphics.pose().pushPose();
-        graphics.drawManaged(() -> TooltipRenderUtil.renderTooltipBackground(graphics, rectangleX, rectangleY, dimension.WIDTH, isBlock && oneLine ? 18 : dimension.BASE_HEIGHT + dimension.EXTRA_HEIGHT, 400));
+        graphics.drawManaged(() -> TooltipRenderUtil.renderTooltipBackground(graphics, rectangleX, rectangleY, dimension.WIDTH, rectangleHeight + (hasExtraTooltips ? 4 : 0), 400));
 
         if (isBlock) {
             BlockState state = Minecraft.getInstance().player.level().getBlockState(((BlockHitResult) hitResult).getBlockPos());
@@ -65,6 +67,10 @@ public class DrawOverlay {
         for (InfoTooltip info : tooltips) {
             info.render(graphics, xPos - dimension.X_OFFSET, yOffset);
             yOffset += info.getHeight();
+        }
+
+        if (hasExtraTooltips) {
+            yOffset += 4;
         }
 
         for (InfoTooltip info : eventTooltips) {
