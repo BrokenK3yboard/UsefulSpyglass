@@ -69,8 +69,8 @@ public class UsefulSpyglass {
         });
     }
 
-    @EventBusSubscriber(modid = ModRegistry.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
-    public static class RegistryEvents {
+    @EventBusSubscriber(modid = ModRegistry.MOD_ID)
+    public static class Events {
 
         @SubscribeEvent
         public static void register(final RegisterPayloadHandlersEvent event) {
@@ -82,10 +82,18 @@ public class UsefulSpyglass {
                 }
             }));
         }
+
+        @SubscribeEvent
+        public static void damageEvent(LivingIncomingDamageEvent event) {
+            if (event.getSource().is(DamageTypeTags.IS_PROJECTILE) && event.getSource().getDirectEntity() instanceof Projectile projectile &&
+                    projectile.hasData(PRECISION_BONUS)) {
+                event.setAmount((float) (event.getAmount() * projectile.getData(PRECISION_BONUS)));
+            }
+        }
     }
 
-    @EventBusSubscriber(modid = ModRegistry.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-    public static class ClientRegistryEvents {
+    @EventBusSubscriber(modid = ModRegistry.MOD_ID, value = Dist.CLIENT)
+    public static class ClientEvents {
 
         @SubscribeEvent
         public static void registerGUI(RegisterGuiLayersEvent event) {
@@ -101,22 +109,6 @@ public class UsefulSpyglass {
         public static void registerRenders(EntityRenderersEvent.RegisterRenderers event) {
             event.registerEntityRenderer(ModRegistry.SPOTTER_EYE, context -> new ThrownItemRenderer<>(context, 1.0F, true));
         }
-    }
-
-    @EventBusSubscriber(modid = ModRegistry.MOD_ID)
-    public static class Events {
-
-        @SubscribeEvent
-        public static void damageEvent(LivingIncomingDamageEvent event) {
-            if (event.getSource().is(DamageTypeTags.IS_PROJECTILE) && event.getSource().getDirectEntity() instanceof Projectile projectile &&
-                    projectile.hasData(PRECISION_BONUS)) {
-                event.setAmount((float) (event.getAmount() * projectile.getData(PRECISION_BONUS)));
-            }
-        }
-    }
-
-    @EventBusSubscriber(modid = ModRegistry.MOD_ID, value = Dist.CLIENT)
-    public static class ClientEvents {
 
         @SubscribeEvent
         public static void onClientTick(ClientTickEvent.Post event) {
