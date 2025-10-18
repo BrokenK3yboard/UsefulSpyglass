@@ -52,7 +52,7 @@ public class DrawOverlay {
         int rectangleX = adjustAxis(rectangleLeft, dimension.WIDTH, screenWidth);
         int rectangleY = adjustAxis(yPos, dimension.BASE_HEIGHT + dimension.EXTRA_HEIGHT, screenHeight);
         int rectangleHeight = isBlock && oneLine ? 18 : dimension.BASE_HEIGHT + dimension.EXTRA_HEIGHT;
-        int yOffset = isBlock && tooltips.size() == 1 ? rectangleY + Minecraft.getInstance().font.lineHeight - (Minecraft.getInstance().font.lineHeight / 2) : rectangleY;
+        int yOffset = isBlock && oneLine ? rectangleY + Minecraft.getInstance().font.lineHeight - (Minecraft.getInstance().font.lineHeight / 2) : rectangleY;
 
         graphics.pose().pushPose();
         graphics.drawManaged(() -> TooltipRenderUtil.renderTooltipBackground(graphics, rectangleX, rectangleY, dimension.WIDTH, rectangleHeight + (hasExtraTooltips ? 4 : 0), 400));
