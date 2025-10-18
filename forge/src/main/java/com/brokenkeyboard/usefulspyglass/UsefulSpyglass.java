@@ -22,7 +22,6 @@ import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -48,12 +47,12 @@ public class UsefulSpyglass {
     public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(Registries.ENTITY_TYPE, ModRegistry.MOD_ID);
     public static final Supplier<EntityType<?>> WATCHER_EYE = ENTITIES.register("watcher_eye", () -> ModRegistry.SPOTTER_EYE);
 
-    public UsefulSpyglass() {
-        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ClientConfig.SPEC);
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, CommonConfig.SPEC);
+    public UsefulSpyglass(FMLJavaModLoadingContext context) {
+        IEventBus bus = context.getModEventBus();
+        context.registerConfig(ModConfig.Type.CLIENT, ClientConfig.SPEC);
+        context.registerConfig(ModConfig.Type.COMMON, CommonConfig.SPEC);
         ENTITIES.register(bus);
-        register(Registries.ENCHANTMENT, ModRegistry::registerEnchantment);
+        register(context, Registries.ENCHANTMENT, ModRegistry::registerEnchantment);
         bus.addListener(this::imcProcess);
     }
 
@@ -110,8 +109,8 @@ public class UsefulSpyglass {
         }
     }
 
-    public static <T> void register(ResourceKey<Registry<T>> registry, Consumer<BiConsumer<ResourceLocation, T>> source) {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener((RegisterEvent event) ->
-                source.accept(((location, t) -> event.register(registry, location, () -> t))));
+    public static <T> void register(FMLJavaModLoadingContext context, ResourceKey<Registry<T>> registry, Consumer<BiConsumer<ResourceLocation, T>> source) {
+        context.getModEventBus().addListener((RegisterEvent event) ->
+                source.accept(((location, supplier) -> event.register(registry, location, () -> supplier))));
     }
 }
