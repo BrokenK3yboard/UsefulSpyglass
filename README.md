@@ -14,7 +14,7 @@ This mod also adds spyglass enchantments. Usage of any enchantment will put the 
 * If Jade is installed, its overlay will be shown instead of the builtin one. This is configurable.
 * If Spyglass improvements is installed, enchantments can be used if the spyglass is placed in the curio/trinkets/accessories slot.
 * If Enchantment descriptions or other equivalent mod is installed, the details of each enchantment will be displayed ingame.
-
+---
 The Precision enchantment can be made compatible with ranged weapons from other mods from version 0.7.0 onwards, provided they extend ```ProjectileWeaponItem```.<br>
 Mods that add custom bows and crossbows that extend ```ProjectileWeaponItem``` should be supported by default.<br>
 Below are examples that mod authors can use to make their weapons compatible:<br>
@@ -43,3 +43,50 @@ Inside the mod's onInitialize() function, add the following:
 ```FabricLoader.getInstance().getObjectShare().put("usefulspyglass:" + Items.CROSSBOW, CROSSBOW);```
 
 The first string should always be "usefulspyglass:" followed by the item, and the second should be the predicate.
+
+---
+
+This mod also provides event handlers that can be used by other mods to add extra information to mob and block tooltips.<br>
+Below are examples that mod authors can use:
+
+### Neoforge:
+
+```
+@Mod.EventBusSubscriber(modid = ModRegistry.MOD_ID, value = Dist.CLIENT)
+public static class ClientEvents {
+
+    @SubscribeEvent
+    public static void onLivingTooltip(LivingTooltipEvent event) {
+        if (event.getEntity() instanceof Creeper) {
+            event.getTooltipList().add(ClientTooltipComponent.create(Component.literal("AW MAN").getVisualOrderText()));
+        }
+    }
+
+    @SubscribeEvent
+    public static void onBlockTooltip(BlockTooltipEvent event) {
+        if (event.getBlockState().is(Blocks.DIRT)) {
+            event.getTooltipList().add(ClientTooltipComponent.create(Component.literal("DIAMONDS").getVisualOrderText()));
+        }
+    }
+}
+```
+
+### Fabric:
+```
+@Override
+public void onInitializeClient() {
+
+    LivingTooltipCallback.EVENT.register((entity, tooltipInfoList) -> {
+        if (entity instanceof Creeper) {
+            tooltipInfoList.add(ClientTooltipComponent.create(Component.literal("AW MAN").getVisualOrderText()));
+        }
+    });
+
+    BlockTooltipCallback.EVENT.register((state, pos, tooltipInfoList) -> {
+        if (state.is(Blocks.DIRT)) {
+            tooltipInfoList.add(ClientTooltipComponent.create(Component.literal("DIAMONDS").getVisualOrderText()));
+        }
+    });
+}
+```
+Note that both events are done on the client side.
