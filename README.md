@@ -43,3 +43,50 @@ Inside the mod's onInitialize() function, add the following:
 ```FabricLoader.getInstance().getObjectShare().put("usefulspyglass:" + Items.CROSSBOW, CROSSBOW);```
 
 The first string should always be "usefulspyglass:" followed by the item, and the second should be the predicate.
+
+---
+
+This mod also provides event handlers that can be used by other mods to add extra information to mob and block tooltips.<br>
+Below are examples that mod authors can use:
+
+### Forge:
+
+```
+@EventBusSubscriber(modid = ModRegistry.MOD_ID, value = Dist.CLIENT)
+public static class ClientEvents {
+
+    @SubscribeEvent
+    public static void onLivingTooltip(LivingTooltipEvent event) {
+        if (event.getEntity() instanceof Creeper) {
+            event.getTooltipList().add(ClientTooltipComponent.create(Component.literal("AW MAN").getVisualOrderText()));
+        }
+    }
+
+    @SubscribeEvent
+    public static void onBlockTooltip(BlockTooltipEvent event) {
+        if (event.getBlockState().is(Blocks.DIRT)) {
+            event.getTooltipList().add(ClientTooltipComponent.create(Component.literal("DIAMONDS").getVisualOrderText()));
+        }
+    }
+}
+```
+
+### Fabric:
+```
+@Override
+public void onInitializeClient() {
+
+    LivingTooltipCallback.EVENT.register((entity, tooltipInfoList) -> {
+        if (entity instanceof Creeper) {
+            tooltipInfoList.add(ClientTooltipComponent.create(Component.literal("AW MAN").getVisualOrderText()));
+        }
+    });
+
+    BlockTooltipCallback.EVENT.register((state, pos, tooltipInfoList) -> {
+        if (state.is(Blocks.DIRT)) {
+            tooltipInfoList.add(ClientTooltipComponent.create(Component.literal("DIAMONDS").getVisualOrderText()));
+        }
+    });
+}
+```
+Note that both events are done on the client side.
