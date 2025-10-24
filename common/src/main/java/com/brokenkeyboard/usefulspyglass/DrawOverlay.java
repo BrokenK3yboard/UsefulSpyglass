@@ -45,23 +45,24 @@ public class DrawOverlay {
         ArrayList<InfoTooltip> tooltips = new ArrayList<>(), eventTooltips = new ArrayList<>();
         TooltipDimensions dimension = createTooltips(hitResult, tooltips, eventTooltips);
 
-        boolean isBlock = DrawOverlay.hitResult instanceof BlockHitResult && Minecraft.getInstance().player != null;
-        boolean oneLine = tooltips.size() + eventTooltips.size() == 1;
+        boolean isBlock = DrawOverlay.hitResult instanceof BlockHitResult && CLIENT.player != null;
+        boolean oneLine = tooltips.size() == 1;
         boolean hasExtraTooltips = !eventTooltips.isEmpty();
         int rectangleLeft = xPos - dimension.WIDTH / 2;
         int rectangleX = adjustAxis(rectangleLeft, dimension.WIDTH, screenWidth);
         int rectangleY = adjustAxis(yPos, dimension.BASE_HEIGHT + dimension.EXTRA_HEIGHT, screenHeight);
-        int rectangleHeight = isBlock && oneLine ? 18 : dimension.BASE_HEIGHT + dimension.EXTRA_HEIGHT;
-        int yOffset = isBlock && oneLine ? rectangleY + Minecraft.getInstance().font.lineHeight - (Minecraft.getInstance().font.lineHeight / 2) : rectangleY;
+        int margin = hasExtraTooltips ? (hitResult instanceof BlockHitResult && oneLine ? 8 : 2) : 0;
+        int rectangleHeight = isBlock && oneLine && !hasExtraTooltips ? 18 : dimension.BASE_HEIGHT + dimension.EXTRA_HEIGHT + margin;
+        int yOffset = isBlock && oneLine ? rectangleY + CLIENT.font.lineHeight - (CLIENT.font.lineHeight / 2) : rectangleY;
 
         graphics.pose().pushPose();
-        graphics.drawManaged(() -> TooltipRenderUtil.renderTooltipBackground(graphics, rectangleX, rectangleY, dimension.WIDTH, rectangleHeight + (hasExtraTooltips ? 4 : 0), 400));
+        graphics.drawManaged(() -> TooltipRenderUtil.renderTooltipBackground(graphics, rectangleX, rectangleY, dimension.WIDTH, rectangleHeight, 400));
 
         if (isBlock) {
-            BlockState state = Minecraft.getInstance().player.level().getBlockState(((BlockHitResult) hitResult).getBlockPos());
-            ItemStack stack = state.getBlock().getCloneItemStack(Minecraft.getInstance().player.level(), ((BlockHitResult) hitResult).getBlockPos(), state);
+            BlockState state = CLIENT.player.level().getBlockState(((BlockHitResult) hitResult).getBlockPos());
+            ItemStack stack = state.getBlock().getCloneItemStack(CLIENT.player.level(), ((BlockHitResult) hitResult).getBlockPos(), state);
             int stackYPos = oneLine ? rectangleY : rectangleY + dimension.BASE_HEIGHT / 2 - 8;
-            renderStack(graphics, stack, rectangleLeft, stackYPos);
+            renderStack(graphics, stack, xPos - dimension.X_OFFSET, stackYPos);
         }
 
         for (InfoTooltip info : tooltips) {
@@ -153,12 +154,12 @@ public class DrawOverlay {
         String[] strings = text.split(" +");
 
         if (strings.length > 1) {
-            int maxLength = (Minecraft.getInstance().getWindow().getGuiScaledWidth() / 5);
+            int maxLength = (CLIENT.getWindow().getGuiScaledWidth() / 5);
             StringBuilder str = new StringBuilder();
 
             for (String addStr : strings) {
                 if (ClientTooltipComponent.create(Component.literal(str + " " + addStr).getVisualOrderText()).getWidth(CLIENT.font) > maxLength && !str.isEmpty()) {
-                    consumer.accept(ClientTooltipComponent.create(Component.literal(str.toString()).getVisualOrderText()));
+                    consumer.accept(ClientTooltipComponent.create(Component.literal(str.toString()).withStyle(color).getVisualOrderText()));
                     str = new StringBuilder();
                 }
 
@@ -197,7 +198,7 @@ public class DrawOverlay {
         Lighting.setupFor3DItems();
         RenderSystem.enableDepthTest();
         graphics.renderItem(stack, x, y);
-        graphics.renderItemDecorations(Minecraft.getInstance().font, stack, x, y, null);
+        graphics.renderItemDecorations(CLIENT.font, stack, x, y, null);
         Lighting.setupForFlatItems();
         RenderSystem.disableDepthTest();
         graphics.pose().popPose();
