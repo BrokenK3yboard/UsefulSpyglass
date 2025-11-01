@@ -1,14 +1,23 @@
 package com.brokenkeyboard.usefulspyglass.mixin;
 
+import com.google.common.collect.ImmutableMap;
 import net.minecraftforge.fml.loading.LoadingModList;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 
 public class UsefulSpyglassMixinPlugin implements IMixinConfigPlugin {
+
+    private static final Map<String, Supplier<Boolean>> CONDITIONS = ImmutableMap.of(
+            "com.brokenkeyboard.usefulspyglass.mixin.RayTracingMixin", () -> LoadingModList.get().getModFileById("jade") != null,
+            "com.brokenkeyboard.usefulspyglass.mixin.WailaTickHandlerMixin", () -> LoadingModList.get().getModFileById("jade") != null,
+            "com.brokenkeyboard.usefulspyglass.mixin.AbstractClientPlayerMixin", () -> LoadingModList.get().getModFileById("spyglass_improvements") != null
+    );
 
     @Override
     public void onLoad(String s) {
@@ -22,7 +31,7 @@ public class UsefulSpyglassMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClass, String mixinClass) {
-        return !mixinClass.contains("RayTracingMixin") || !mixinClass.contains("WailaTickHanderMixin") || LoadingModList.get().getModFileById("jade") != null;
+        return CONDITIONS.getOrDefault(mixinClass, () -> true).get();
     }
 
     @Override

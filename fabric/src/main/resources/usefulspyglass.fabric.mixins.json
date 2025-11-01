@@ -15,6 +15,7 @@
     "TrackedEntityMixin"
   ],
   "client": [
+    "AbstractClientPlayerMixin",
     "MPGameModeMixin",
     "RayTracingMixin",
     "WailaTickHandlerMixin"
