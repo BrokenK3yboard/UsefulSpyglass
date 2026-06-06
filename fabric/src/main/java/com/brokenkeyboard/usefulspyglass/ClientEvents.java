@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
@@ -24,7 +25,7 @@ public final class ClientEvents implements ClientModInitializer {
         EntityRendererRegistry.register(ModRegistry.SPOTTER_EYE, context -> new ThrownItemRenderer<>(context, 1.0F, true));
 
         HudRenderCallback.EVENT.register((graphics, tickDelta) -> {
-            if ((!FabricLoader.getInstance().isModLoaded("jade") || !ClientConfig.JADE_INTEGRATION.get()) &&
+            if (!Minecraft.getInstance().options.hideGui && (!FabricLoader.getInstance().isModLoaded("jade") || !ClientConfig.JADE_INTEGRATION.get()) &&
                     ((hitResult instanceof EntityHitResult && ClientConfig.DISPLAY_ENTITIES.get()) || (hitResult instanceof BlockHitResult && ClientConfig.DISPLAY_BLOCKS.get()))) {
                 DrawOverlay.drawGUI(graphics);
             }

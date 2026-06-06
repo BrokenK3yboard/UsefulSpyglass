@@ -98,7 +98,7 @@ public class UsefulSpyglass {
         @SubscribeEvent
         public static void registerGUI(RegisterGuiLayersEvent event) {
             event.registerAbove(VanillaGuiLayers.DEBUG_OVERLAY, ResourceLocation.fromNamespaceAndPath(ModRegistry.MOD_ID, "hud_base"), (gui, deltaTracker) -> {
-                if ((!ModList.get().isLoaded("jade") || !ClientConfig.JADE_INTEGRATION.get()) &&
+                if (!Minecraft.getInstance().options.hideGui && (!ModList.get().isLoaded("jade") || !ClientConfig.JADE_INTEGRATION.get()) &&
                         ((hitResult instanceof EntityHitResult && ClientConfig.DISPLAY_ENTITIES.get()) || (hitResult instanceof BlockHitResult && ClientConfig.DISPLAY_BLOCKS.get()))) {
                     DrawOverlay.drawGUI(gui);
                 }

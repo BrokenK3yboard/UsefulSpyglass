@@ -15,14 +15,11 @@ public class AbstractArrowMixin {
     @Shadow
     private int life;
 
-    @Shadow
-    protected boolean inGround;
-
     @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/projectile/Projectile;tick()V", shift = At.Shift.AFTER))
     private void removeArrow(CallbackInfo ci) {
         Projectile projectile = (Projectile) (Object) this;
-        if (Services.PLATFORM.hasPrecisionBonus(projectile) && life > 1200 && !this.inGround) {
-            projectile.discard();
+        if (Services.PLATFORM.hasPrecisionBonus(projectile) && life > 1200 || projectile.isInWater() || projectile.isInLava()) {
+            projectile.setNoGravity(false);
         }
     }
 }
