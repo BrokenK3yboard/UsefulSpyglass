@@ -16,7 +16,7 @@ public class UsefulSpyglassMixinPlugin implements IMixinConfigPlugin {
     private static final Map<String, Supplier<Boolean>> CONDITIONS = ImmutableMap.of(
             "com.brokenkeyboard.usefulspyglass.mixin.RayTracingMixin", () -> LoadingModList.get().getModFileById("jade") != null,
             "com.brokenkeyboard.usefulspyglass.mixin.WailaTickHandlerMixin", () -> LoadingModList.get().getModFileById("jade") != null,
-            "com.brokenkeyboard.usefulspyglass.mixin.AbstractClientPlayerMixin", () -> LoadingModList.get().getModFileById("spyglass_improvements") != null
+            "com.brokenkeyboard.usefulspyglass.mixin.AbstractClientPlayerMixin", () -> LoadingModList.get().getModFileById("spyglass_improvements") == null
     );
 
     @Override
