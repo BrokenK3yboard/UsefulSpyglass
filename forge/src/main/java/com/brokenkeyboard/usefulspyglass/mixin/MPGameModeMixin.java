@@ -22,14 +22,14 @@ public class MPGameModeMixin {
 
     @Inject(method = {"lambda$useItem$5", "m_233716_"}, at = @At(value = "INVOKE", target = "Lorg/apache/commons/lang3/mutable/MutableObject;setValue(Ljava/lang/Object;)V",
             shift = At.Shift.AFTER, ordinal = 0))
-    private void allowSpyglassUse(InteractionHand hand, Player player, MutableObject<InteractionResult> object, int value, CallbackInfoReturnable<ServerboundUseItemPacket> cir, @Local ItemStack stack) {
-        if (stack.getItem() instanceof SpyglassItem && Minecraft.getInstance().level != null) {
-            InteractionResultHolder<ItemStack> result = stack.use(Minecraft.getInstance().level, player, hand);
+    private void allowSpyglassUse(InteractionHand hand, Player player, MutableObject<InteractionResult> mutableobject, int p_233720_, CallbackInfoReturnable<ServerboundUseItemPacket> cir, @Local(ordinal = 0) ItemStack itemstack) {
+        if (itemstack.getItem() instanceof SpyglassItem && Minecraft.getInstance().level != null) {
+            InteractionResultHolder<ItemStack> result = itemstack.use(Minecraft.getInstance().level, player, hand);
             ItemStack stack1 = result.getObject();
-            if (stack1 != stack) {
+            if (stack1 != itemstack) {
                 player.setItemInHand(hand, stack1);
             }
-            object.setValue(result.getResult());
+            mutableobject.setValue(result.getResult());
         }
     }
 }

@@ -22,9 +22,9 @@ public class TrackedEntityMixin {
     Entity entity;
 
     @Inject(method = "broadcast", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerPlayerConnection;send(Lnet/minecraft/network/protocol/Packet;)V"))
-    private void modifyPacket(Packet<?> packet, CallbackInfo ci, @Local ServerPlayerConnection connection) {
+    private void modifyPacket(Packet<?> packet, CallbackInfo ci, @Local(ordinal = 0) ServerPlayerConnection serverplayerconnection) {
         if (packet instanceof ClientboundSetEntityDataPacket entityPacket) {
-            if (((MarkedEntitiesAccess) connection.getPlayer()).us$getMarkedEntities().getMarkedEntities().containsKey(entity.getUUID())) {
+            if (((MarkedEntitiesAccess) serverplayerconnection.getPlayer()).us$getMarkedEntities().getMarkedEntities().containsKey(entity.getUUID())) {
                 byte entityData = this.entity.getEntityData().get(EntityAccessor.getDATA_SHARED_FLAGS_ID());
                 entityPacket.packedItems().add(new SynchedEntityData.DataValue<>(EntityAccessor.getDATA_SHARED_FLAGS_ID().getId(),
                         EntityAccessor.getDATA_SHARED_FLAGS_ID().getSerializer(), (byte) (entityData | 1 << EntityAccessor.getFLAG_GLOWING())));
