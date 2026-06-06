@@ -17,7 +17,7 @@ import snownee.jade.overlay.RayTracing;
 public class RayTracingMixin {
 
     @WrapOperation(method = "fire", at = @At(value = "INVOKE", target = "Lsnownee/jade/overlay/RayTracing;rayTrace(Lnet/minecraft/world/entity/Entity;DD)Lnet/minecraft/world/phys/HitResult;"), require = 0)
-    private HitResult modifyRange(RayTracing instance, Entity lookVector, double entityDist, double blockDist, Operation<HitResult> original, @Local Player player) {
-        return ClientConfig.JADE_INTEGRATION.get() && player.isScoping() ? original.call(instance, lookVector, 100D, 100D) : original.call(instance, lookVector, entityDist, blockDist);
+    private HitResult modifyRange(RayTracing instance, Entity entity, double blockReach, double entityReach, Operation<HitResult> original, @Local(name = "viewPlayer") Player viewPlayer) {
+        return ClientConfig.JADE_INTEGRATION.get() && viewPlayer.isScoping() ? original.call(instance, entity, 100D, 100D) : original.call(instance, entity, blockReach, entityReach);
     }
 }
